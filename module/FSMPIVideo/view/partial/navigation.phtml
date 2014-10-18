@@ -1,0 +1,9 @@
+<ul>
+<?php $c = 0;?>
+<?php foreach ($this->container as $key => $page): ?>
+	<?php if($c != 0) : ?>
+		<li><span class="separator">|</span></li>
+	<?php endif; ?>
+	<li <?= $page->active ? 'class="active"' : '' ?>><?= $this->navigation()->menu()->htmlify($page) ?></li>
+<?php $c++; endforeach; ?>
+</ul>

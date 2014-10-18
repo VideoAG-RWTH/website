@@ -1,0 +1,30 @@
+{
+  "name": "fsmpivideo",
+  "version": "0.0.0",
+  "description": "FSMPI Video AG Webseite",
+  "main": "public/index.php",
+  "keywords": [
+    "FSMPI",
+    "Video",
+    "RWTH"
+  ],
+  "authors": [
+    "aleksandr@fsmpi.rwth-aachen.de"
+  ],
+  "license": "GPL",
+  "homepage": "video.rwth-aachen.de",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+	"dependencies" : {
+		"jquery" : "1.*",
+		"bootstrap" : "3.*",
+		"html5shiv" : "*",
+		"respond" : "*",
+		"bootflat" : "*"
+	}
+}

@@ -1,0 +1,3 @@
+php composer.phar update
+bower install
+php public/index.php bower prepare-packs

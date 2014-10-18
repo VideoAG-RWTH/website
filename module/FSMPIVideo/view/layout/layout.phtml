@@ -1,0 +1,99 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
+
+        <?php echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Le styles -->
+        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+    					->prependStylesheet($this->basePath() . '/css/template.css')
+                        ->prependStylesheet($this->basePath() . '/css/style.css')
+                        ->prependStylesheet($this->basePath() . '/css/bootstrap-theme.min.css')
+                        ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css') ?>
+		
+		<?php $this->bower('main', \BowerModule\View\Helper\Bower::CONTAINER_HEAD); ?>
+
+        <!-- Scripts -->
+        <?php echo $this->headScript()->prependFile($this->basePath() . '/js/ieLT9.min.js', 'text/javascript', array('conditional' => 'lt IE 9',)); ?>
+    </head>
+	<body>
+		<!-- BEGIN Wrapper -->
+		<div id="wrapper">
+
+			<!-- BEGIN Head -->
+			<div id="header">
+				<div id="header-logo">
+					<a href="<?php echo $this->url('home') ?>"><img align="left" width="129px" src="img/header-logo.png" alt="Video AG" /></a>
+				</div>
+				<div id="header-searchbar">
+					SEARCH
+				</div>
+				<div id="header-infobutton"></div>
+				<div id="header-logo-separator"></div>
+				<div id="topnavi">
+					<?php echo $this->navigation('navigation')
+					    ->menu()
+					    ->setMinDepth(0)
+					    ->setMaxDepth(0)
+						->setonlyActiveBranch(false)
+						->setUlClass('')
+						->setPartial('partial/navigation.phtml')
+					    ->render(); ?>
+				</div>
+				<div id="inHeader">
+					<!-- BEGIN Messages -->
+					<div class="position">
+						<div class="news">
+							<div class="news-header">News</div>
+							<dl>
+								<dt>02.02.2015</dt>
+								<dd>Blinde Texte können es wohl doch nicht</dd>
+								<dt>01.02.2015</dt>
+								<dd>Test test Test Test test</dd>
+								<dd>Blinde texte können auch sehen</dd>
+								<dt>30.01.2015</dt>
+								<dd>Ein neues Video ist erschnienen</dd>
+							</dl>
+						</div>
+					</div>
+					<!-- END Messages -->
+				</div>
+				<div class="cleared"></div>
+			</div>
+			<!-- END Head -->
+
+			<!-- BEGIN Middle -->
+			<div id="middle">
+				<!-- BEGIN ContentWrapper -->
+				<div id="contentWrapper">
+					<!-- BEGIN Content -->
+					<div id="content">
+						<div id="incontent">
+							<!-- END right sidebar -->
+							<?php echo $this->content ?>
+							<div class="cleared"></div>
+						</div>
+					</div>
+					<!-- END Content -->
+				</div>
+				<!-- END ContentWrapper -->
+
+				<div id="min_height" class="cleared"></div>
+			</div>
+			<!-- END Middle -->
+
+			<!-- BEGIN Footer -->
+			<div id="footer">
+				&copy; 2014
+			</div>
+			<!-- END Footer -->
+		</div>	
+		<!-- END Wrapper -->
+    </body>
+</html>

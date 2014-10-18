@@ -1,0 +1,700 @@
+@CHARSET "UTF-8";
+/* http://meyerweb.com/eric/tools/css/reset/ v2.0 | 20110126 License: none (public domain) */ 
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+	font-size: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+	color:#000;
+}
+/* HTML5 display-role reset for older browsers */ 
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1.3;
+	text-align:center;
+	font:inherit;
+}
+ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after, q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* end of http://meyerweb.com/eric/tools/css/reset/ v2.0 | 20110126 License: none (public domain) */
+
+/*=========================================================================================================*/
+
+body{
+    text-align: center;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+	color: #000000;
+	margin-left: 3px;
+	margin-right: 0px;
+	margin-top: 10px;
+}
+
+img, a{
+	border: none;
+}
+
+img{
+  margin: 0;
+  padding: 0;
+}
+
+table{
+	font-size: 12px;
+}
+
+/*=========================================================================*/
+/* BEGIN Grundgeruest                                                      */
+/*=========================================================================*/
+
+#wrapper{
+	position: relative;
+	width: 983px;
+	margin: auto;
+	background-position: bottom center;
+	background-repeat: no-repeat;
+	background-color: #fff;
+	text-align: left;
+	margin-top: 50px;
+}
+
+/*=========================================================================*/
+/* BEGIN Header                                                            */
+/*=========================================================================*/
+
+#header{
+	position: relative;
+	background-image: url('../img/header2.png');
+	min-height: 150px;
+	background-repeat: no-repeat;
+	background-position: -3px -3px;
+	border-left: 3px solid #0069b4;
+	border-right: 3px solid #0069b4;
+	border-top: 3px solid #0069b4;
+	border-top-right-radius: 4px;
+	border-top-left-radius: 6px;
+}
+
+#header-logo{
+	width: 129px;
+	height: 129px;
+	position: absolute;
+	left: -24px;
+	top: -37px;	
+}
+
+#header-infobutton{
+	background-image: url('../img/info-button.png');
+	position: absolute;
+	right: -23px;
+	top: 230px;
+	width: 23px;
+	height: 60px;
+}
+
+#header-logo-separator{
+	width: 120px; 
+	height: 80px; 
+	float: left;	
+}
+
+#header-searchbar{
+	position: absolute;
+	right: -3px;
+	top: -34px;
+}
+
+#header-searchbar .search{
+	padding: 2px;
+	border: 2px solid #0069b4;
+	border-right-width: 4px;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+	background-image: url('../img/searchbar-glass.png');
+	background-repeat: no-repeat;
+	padding-left: 30px;
+	border-top-left-radius: 18px;
+	border-bottom-left-radius: 18px;
+	background-position: -2px -2px;
+}
+
+#header-searchbar input{
+	height: 16px;
+	width: 142px;
+	font-size: 13px;
+	border: none;
+}
+
+#topnavi{
+    float: left;
+    text-align: left;
+	margin-top: 23px;
+	margin-bottom: 23px;
+    width: 59%;
+    font-size: 16px;
+    color: white;
+}
+
+#topnavi ul{
+    position: relative;
+    vertical-align: top;
+	float: left;
+    /* Some Cross-browser hacks for inline-block */
+    display: -moz-inline-stack;
+    display: inline-block;
+    zoom: 1;
+    *display: inline;
+}
+
+#topnavi ul li{
+    display: block;
+    float: left;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: white;
+}
+
+#topnavi ul li a:link, #topnavi ul li a:visited, #topnavi ul li .separator{
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+    margin: 0 0px;
+    padding: 0 5px;
+    font-size: 30px;
+	letter-spacing: 3px;
+    color: white;
+    text-align: center;
+}
+
+#topnavi ul li a:link, #topnavi ul li a:visited{
+    cursor: pointer;
+}
+
+#topnavi ul li .separator{
+    cursor: default;
+    font-size: 35px;
+	position: relative;
+	top: -5px;
+}
+
+#topnavi ul li a:hover, #topnavi ul li.active a, #topnavi ul li.alias-parent-active a{
+	text-decoration: underline;
+}
+
+#inHeader{
+    width: 100%;
+    position: relative;
+	float: left;
+	margin-top: 16px;
+}
+
+#inHeader .position{
+	width: 780px;
+	margin: auto;
+}
+
+
+/*------- Messages -------*/
+#inHeader #system-message > .message{
+	margin-bottom: 10px;
+	border: 2px solid black;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
+#inHeader #system-message > .message{
+	background-image: url('../img/status-message-back.png');
+	background-size: 20px 1px;
+	background-repeat: repeat-y;
+	border-color: #8ebae5;
+}
+
+#inHeader #system-message > .error{
+	background-image: url('../img/status-background.png');
+	background-size: 20px 1px;
+	background-repeat: repeat-y;
+	border-color: #cd1619;
+}
+
+#inHeader #system-message > .notice{
+	background-image: url('../img/status-notice-back.png');
+	background-size: 20px 1px;
+	background-repeat: repeat-y;
+	border-color: #f6a800;
+}
+
+#inHeader #system-message > .message > ul{
+	background-color: transparent;
+	border: none;
+	margin: 0px;
+}
+
+#inHeader #system-message > .message > ul{
+	background-image: url('../img/info.png');
+	background-position: 7px 2px;
+}
+
+#inHeader #system-message > .error > ul{
+	background-image: url('../img/ausrufezeichen.png');
+	background-position: 7px 2px;
+}
+
+#inHeader #system-message > .notice > ul{
+	background-image: url('../img/ausrufezeichen.png');
+	background-position: 7px 2px;
+}
+
+#inHeader #system-message > dd > ul{
+	padding: 3px 10px;
+}
+
+#inHeader #system-message > dd > ul > li{
+	line-height: normal;
+	font-weight: normal;
+}
+
+#inHeader #system-message > dd{
+	text-indent: 18px;
+}
+
+/*------- News -------*/
+#inHeader .news {
+	border: 2px solid #0069b4;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
+#inHeader .news > .news-header {
+	background-color: #0069b4;
+	color: white;
+	padding-left: 11px;
+	height: 19px;
+}
+
+#inHeader .news > dl {
+	
+}
+
+#inHeader .news > dl > dt {
+	float: left;
+	margin-left: 11px;
+	clear: left;
+}
+
+#inHeader .news > dl > dd {
+	margin-left: 119px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+#inHeader p{
+    padding-left: 30px;
+}
+
+/*=========================================================================*/
+/* END Header                                                              */
+/*=========================================================================*/
+
+/*=========================================================================*/
+/* BEGIN Middle                                                            */
+/*=========================================================================*/
+
+#middle{
+	position: relative;
+	background-color: transparent;
+	border-left: 3px solid #0069b4;
+	border-right: 3px solid #0069b4;
+	border-bottom: 20px solid #0069b4;
+	border-bottom-left-radius: 17px;
+	border-bottom-right-radius: 17px;
+}
+
+#min_height{
+	width: 1px;
+	height: 70px;
+}
+
+#breadcrumbs{
+	height: 25px;
+}
+
+#breadcrumbs .breadcrumbs{
+    font-size: 12px;
+    float: left;
+}
+
+#breadcrumbs .breadcrumbs .pathway, #breadcrumbs .breadcrumbs span{
+    font-size: 12px;
+    text-decoration: none;
+}
+
+#breadcrumbs .search{
+    float: right;
+    position: relative;
+    top: -3px;
+}
+
+/*=========================================================================*/
+/* BEGIN Content                                                           */
+/*=========================================================================*/
+
+#contentWrapper{
+	position: relative;
+	min-height: 540px;
+}
+
+.cleared{
+    clear: both;
+}
+
+#content{
+	position: relative;
+	min-height: 630px;
+	background-color: #fff;
+	left: 0px;
+	top: 0px;
+	margin: 0px 0px 5px 0px;
+}
+
+#content h1{
+	margin-top: 0px;
+}
+
+#content ul{
+	list-style: disc;
+}
+
+#content ul li{
+	margin-left: 20px;
+}
+
+#content ul.actions{
+	list-style: none;
+    display: block;
+    position: absolute;
+    top: 5px; 
+    right: 5px;
+}
+
+#content ul.actions li{
+    float: left;
+    margin-right: 5px;
+	margin-left: 0px;
+}
+
+#content ul.actions li img{
+    
+}
+
+.pagination{
+	text-align: right;
+	margin-top: 20px;
+}
+
+.pagination ul li{
+	display: inline;
+	margin: 0 3px;
+}
+
+.leading-0, .leading-1, .leading-2, .leading-3, .leading-4, .leading-5, .leading-6, .leading-7, .leading-8, .leading-9, .leading-10{
+	position: relative;
+}
+
+.kontakt_person{
+	margin: 20px 0;
+	position: relative;
+}
+
+.kontakt_title{
+	font-family: Times;
+	font-size: 24px;
+}
+
+.kontakt_picture{
+	text-align: center;
+	font-size: 15px;
+	width: 180px;
+}
+
+.kontakt_picture img{
+	width: 100px;
+}
+
+.kontakt_information{
+	position: absolute;
+	top: 60px;
+	left: 180px;
+}
+
+.kontakt_information table{
+	border: none;
+}
+
+.kontakt_information_left{
+	font-size: 13px;
+	text-decoration: underline;
+	vertical-align: top;
+	text-align: right;
+}
+
+.kontakt_information_right{
+	padding-left: 15px;
+	font-size: 13px;
+	vertical-align: top;
+	text-align: left;
+}
+
+table th{
+	background-color: #C4D6F4;
+	font-weight: bold;
+	text-align: center;
+	
+}
+
+tr.even{
+	background-color: #EEEEEE;
+}
+
+tr.odd{
+	background-color: #FFFFFF;
+}
+
+
+td, th{
+	padding: 0 3px;
+}
+
+img.fllft {
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+img.flrgt {
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+#adminForm .formelm label{
+    width: 180px;
+    /* Some Cross-browser hacks for inline-block */
+    display: -moz-inline-stack;
+    display: inline-block;
+    zoom: 1;
+    *display: inline;
+}
+
+#adminForm .formelm label#jform_title-lbl{
+    width: 100px;
+}
+
+
+#adminForm .formelm-area label{
+    display: block;
+}
+
+#adminForm #jform_alias-lbl,
+#adminForm #jform_alias,
+#adminForm #jform_catid-lbl,
+#adminForm #jform_catid,
+/*#adminForm .category,*/
+#adminForm #jform_featured-lbl,
+#adminForm #jform_featured,
+#adminForm #form-note,
+#adminForm .toggle-editor{
+    display: none;
+}
+
+#adminForm fieldset{
+    margin: 5px 5px 10px 0;
+}
+
+#adminForm fieldset legend{
+    font-size: 14px;
+    font-weight: bold
+}
+
+#editor-xtd-buttons a {
+    font-size: 12px;
+}
+
+#wrapper .newsflash h4{
+	margin-top: 8px;
+	clear: right;
+}
+
+#wrapper .newsflash p{
+	margin-bottom: 3px;
+}
+
+#wrapper .newsflash a.readmore{
+	float: right;
+	margin-bottom: 8px;
+}
+
+/*=========================================================================*/
+/* END Content                                                             */
+/*=========================================================================*/
+
+/*=========================================================================*/
+/* END Middle                                                              */
+/*=========================================================================*/
+
+/*=========================================================================*/
+/* BEGIN Footer                                                            */
+/*=========================================================================*/
+
+#footer{
+	font-size: 12px;
+	color: #000;
+	text-align: center;
+	position: relative;
+	bottom: 35px;
+	margin-top: 45px;
+}
+
+#footer a{
+	text-decoration: none;
+	color: #000;
+}
+
+#footer a:hover{
+	text-decoration: underline;
+}
+
+#footer ul{
+    position: relative;
+    vertical-align: top;
+    /* Some Cross-browser hacks for inline-block */
+    display: -moz-inline-stack;
+    display: inline-block;
+    zoom: 1;
+    *display: inline;
+}
+
+#footer ul li{
+    display: block;
+    float: left;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+#footer ul li a:link, #footer ul li a:visited, #footer ul li .separator{
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+    margin: 0 0px;
+    padding: 0 5px;
+    font-size: 13px;
+    color: #000;
+    text-align: center;
+}
+
+#footer ul li a:link, #footer ul li a:visited{
+    cursor: pointer;
+}
+
+#footer ul li .separator{
+    cursor: default;
+}
+
+#footer ul li a:hover{
+	text-decoration: underline;
+}
+
+
+/*=========================================================================*/
+/* END Footer                                                              */
+/*=========================================================================*/
+
+/*=========================================================================*/
+/* BEGIN Typo                                                              */
+/*=========================================================================*/
+
+
+h1{
+	font-family: Arial, sans-serif;
+	font-size: 26px;
+	clear:left;
+	margin: 20px 0;
+}
+
+h2, .subheading-category, #wrapper #easybook h2{
+	font-family: Arial, sans-serif;
+	font-size: 19px;
+	clear: left;
+	margin: 15px 0;
+	background-color: #0069b4;
+	border: 3px solid #0069b4;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+	width: 275px;
+	color: white;
+	text-align: right;
+	padding: 4px 10px 4px 0;
+	font-weight: normal;
+}
+
+h3{
+	font-family: Arial, sans-serif;
+	font-size: 21px;
+	clear:left;
+	margin: 15px 0;
+}
+
+p, td, a, div, span, label{
+	font-size: 13px;
+}
+
+#wrapper p{
+	margin: 8px 0
+}
+
+/*=========================================================================*/
+/* END Typo                                                                */
+/*=========================================================================*/
+
+
+/*=========================================================================*/
+/* BEGIN Extras                                                            */
+/*=========================================================================*/
+
+/*=========================================================================*/
+/* END Extras                                                              */
+/*=========================================================================*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
