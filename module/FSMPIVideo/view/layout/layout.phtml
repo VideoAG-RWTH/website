@@ -34,10 +34,20 @@
 			<!-- BEGIN Head -->
 			<div id="header">
 				<div id="header-logo">
-					<a href="<?php echo $this->url('home') ?>"><img align="left" width="129px" src="img/header-logo.png" alt="Video AG" /></a>
+					<a href="<?php echo $this->url('home') ?>" title="Video AG"></a>
 				</div>
 				<div id="header-searchbar">
-					SEARCH
+					<div class="search">
+					<?php
+						$searchform = new \FSMPIVideo\Form\VideoSearchForm();
+						$searchform->setAttribute('action', $this->url('home', array('action' => 'index')));
+						$searchform->prepare();
+						
+						echo $this->form()->openTag($searchform);
+						echo $this->formInput($searchform->get('search'));
+						echo $this->form()->closeTag();
+					?>
+					</div>
 				</div>
 				<div id="header-infobutton"></div>
 				<div id="header-logo-separator"></div>

@@ -97,6 +97,12 @@ table{
 	top: -37px;	
 }
 
+#header-logo a{
+	display: block;
+	height: 129px;
+	background-image: url('../img/header-logo.png');
+}
+
 #header-infobutton{
 	background-image: url('../img/info-button.png');
 	position: absolute;
@@ -137,6 +143,7 @@ table{
 	width: 142px;
 	font-size: 13px;
 	border: none;
+	padding: 0;
 }
 
 #topnavi{

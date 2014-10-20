@@ -48,9 +48,20 @@ class User extends ZfcUserEntity implements JsonSerializable
     /**
      * Get role.
      *
-     * @return string
+     * @return int
      */
 	public function getRole(){ return $this->role; }
+
+    /**
+     * Get role name.
+     *
+     * @return string
+     */
+	public function getRoleName(){ 
+		if(array_key_exists($this->role, self::$roles)) 
+			return self::$roles[$this->role]; 
+		return "";
+	}
 
     /**
      * Get jabber.
@@ -76,7 +87,7 @@ class User extends ZfcUserEntity implements JsonSerializable
     /**
      * Set role.
      *
-     * @param string $role
+     * @param int $role
      * @return UserInterface
      */
 	public function setRole($role){ $this->role = $role; return $this; }
