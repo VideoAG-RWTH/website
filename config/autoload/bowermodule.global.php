@@ -19,6 +19,9 @@ return array(
 				'modules' => array(
 					'jquery',
 					'bootstrap',
+					"Selecter",
+					"Stepper",
+					"iCheck"
 				)
 			),
 			'ieLT9' => array(

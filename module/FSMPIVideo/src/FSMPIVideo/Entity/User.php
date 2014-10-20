@@ -14,12 +14,35 @@ use Zend\Json\Json;
  */
 class User extends ZfcUserEntity implements JsonSerializable
 {
-	private $roles = array('Reporter', 'Moderator', 'Admin');
+	const ROLE_ADMIN = 10;
+	const ROLE_MODERATOR = 20;
+	const ROLE_REPORTER = 30;
+	
+	public static $roles = array(
+		self::ROLE_ADMIN => 'Admin', 
+		self::ROLE_MODERATOR => 'Moderator', 
+		self::ROLE_REPORTER => 'Reporter'
+	);
+
+	/**
+	 * @ORM\Column(type="integer")
+	 */
+	public $role;
 
 	/**
 	 * @ORM\Column(type="string")
 	 */
-	public $role;
+	public $jabber;
+
+	/**
+	 * @ORM\Column(type="string")
+	 */
+	public $phone;
+
+	/**
+	 * @ORM\Column(type="string")
+	 */
+	public $coded_directory;
 	
 
     /**
@@ -27,9 +50,28 @@ class User extends ZfcUserEntity implements JsonSerializable
      *
      * @return string
      */
-    public function getRole(){
-        return $this->role;
-    }
+	public function getRole(){ return $this->role; }
+
+    /**
+     * Get jabber.
+     *
+     * @return string
+     */
+	public function getJabber(){ return $this->jabber; }
+
+    /**
+     * Get phone.
+     *
+     * @return string
+     */
+	public function getPhone(){ return $this->phone; }
+
+    /**
+     * Get coded directory.
+     *
+     * @return string
+     */
+	public function getCodedDirectory(){ return $this->coded_directory; }
 
     /**
      * Set role.
@@ -37,10 +79,31 @@ class User extends ZfcUserEntity implements JsonSerializable
      * @param string $role
      * @return UserInterface
      */
-    public function setRole($role){
-        $this->role = $role;
-        return $this;
-    }
+	public function setRole($role){ $this->role = $role; return $this; }
+
+    /**
+     * Set jabber.
+     *
+     * @param string $jabber
+     * @return UserInterface
+     */
+	public function setJabber($jabber){ $this->jabber = $jabber; return $this; }
+
+    /**
+     * Set phone.
+     *
+     * @param string $phone
+     * @return UserInterface
+     */
+	public function setPhone($phone){ $this->phone = $phone; return $this; }
+
+    /**
+     * Set coded directory.
+     *
+     * @param string $coded_directory
+     * @return UserInterface
+     */
+	public function setCodedDirectory($coded_directory){ $this->coded_directory = $coded_directory; return $this; }
 
 
 	public function toJson(){
@@ -56,6 +119,9 @@ class User extends ZfcUserEntity implements JsonSerializable
 			'displayname' => $this->getDisplayName(),
 			'state' => $this->getState(),
 			'role' => $this->getRole(),
+			'jabber' => $this->getJabber(),
+			'phone' => $this->getPhone(),
+			'coded_directory' => $this->getCodedDirectory(),
 		);
 		return $data;
 	}

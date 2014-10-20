@@ -8,6 +8,8 @@ return array(
 		'ZfcBase',
 		'ZfcUser',
 		'ZfcUserDoctrineORM',
+		'ZfcAdmin',
+		'ZfcUserAdmin',
         'FSMPIVideo',
     ),
 

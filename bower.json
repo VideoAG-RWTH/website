@@ -25,6 +25,9 @@
 		"bootstrap" : "3.*",
 		"html5shiv" : "*",
 		"respond" : "*",
-		"bootflat" : "*"
+		"bootflat" : "*",
+		"Selecter" : "*",
+		"Stepper" : "*",
+		"iCheck" : "*"
 	}
 }
