@@ -381,6 +381,10 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 		$this->setWebVTTFile($data['webvtt_file']);
 	}
  
+	public function getArrayCopy(){
+		return $this->jsonSerialize();
+	}
+	
 	public function setInputFilter(InputFilterInterface $inputFilter){
 		throw new \Exception("Not used");
 	}

@@ -15,4 +15,5 @@ composer.lock
 vendor/
 bower_components/
 public/js/dev/
-
+module/Application/
+data/DoctrineORMModule/

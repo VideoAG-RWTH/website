@@ -1,0 +1,103 @@
+<?php
+/** 
+ * @var string $title Page Title
+ * @var string $list_route Route to this list
+ * @var string $create_route Route to create new entry
+ * @var string $id_name name of id property for edit/delete. Default: id
+ * @var string $edit_route Route to edit entry
+ * @var string $edit_param_name Parameter name for edit route. Default: id
+ * @var string $delete_route Route to delete entry
+ * @var string $delete_param_name Parameter name for delete route. Default: id
+ * @var string $delete_warning_text Text to show before deleting
+ * @var string $create_text Text on create button
+ * @var array $columns Array of Columns to be displayed (Key: Display, Value: getter)
+ * @var array $rows Array of Objects to be shown
+ * @var int $page Page number for pagination
+ * @var int $page_length Number of items on one page
+ */
+
+if(empty($this->delete_param_name))
+	$this->delete_param_name = 'id';
+if(empty($this->edit_param_name))
+	$this->edit_param_name = 'id';
+if(empty($this->id_name))
+	$this->id_name = 'id';
+
+if (is_array($this->rows)) {
+    $paginator = new Zend\Paginator\Paginator(new Zend\Paginator\Adapter\ArrayAdapter($this->rows));
+} elseif($this->rows instanceof Traversable && !($this->rows instanceof Zend\Paginator\Paginator)) {
+    $paginator = new Zend\Paginator\Paginator(new Zend\Paginator\Adapter\Iterator($this->rows));
+} else {
+    $paginator = $this->rows;
+}
+
+$paginator->setItemCountPerPage($this->page_length);
+$paginator->setCurrentPageNumber($this->page);
+
+
+$getters = array();
+foreach ($this->columns as $element) {
+    $parts = explode('_', $element);
+    array_walk($parts, function (&$val) {
+        $val = ucfirst($val);
+    });
+    $getters[$element] = 'get' . implode('', $parts);
+}
+
+$parts = explode('_', $this->id_name);
+array_walk($parts, function (&$val) {
+    $val = ucfirst($val);
+});
+$idGetter = 'get' . implode('', $parts);
+?>
+
+<h1><?php echo $this->translate($this->title) ?></h1>
+
+<div class="navbar filter-bar">
+    <div class="navbar-inner">
+        <div class="pull-right">
+            <a href="<?php echo $this->url($this->create_route) ?>" class="btn btn-primary">
+                <?php echo $this->translate($this->create_text) ?>
+            </a>
+        </div>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <?php foreach ($this->columns as $name => $element): ?>
+                <th><?php echo $this->escapeHtml($name ? : $element); ?></th>
+            <?php endforeach; ?>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($paginator as $row): ?>
+        <tr>
+            <?php foreach ($this->columns as $element): ?>
+                <td class="cell cell-<?php echo $this->escapeHtml($element) ?>">
+                    <?php echo call_user_func(array($row, $getters[$element])); ?>
+                </td>
+            <?php endforeach; ?>
+            <td class="cell cell-ctrls">
+                <a href="<?php echo $this->url($this->edit_route, array($this->edit_param_name => call_user_func(array($row, $idGetter)) )); ?>">
+                    <?php echo $this->translate('Edit') ?>
+                </a>
+                |
+                <a href="<?php echo $this->url($this->delete_route, array($this->delete_param_name => call_user_func(array($row, $idGetter)) )); ?>"
+                   onclick="return confirm('<?php echo $this->translate($this->delete_warning_text) ?>')">
+                    <?php echo $this->translate('Delete') ?>
+                </a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="<?php echo count($this->columns) + 1; ?>">
+            <?php echo $this->paginationControl($paginator, 'Sliding', 'partial/admin_pagination.phtml', array('list_route' => $this->list_route)); ?>
+        </td>
+    </tr>
+    </tfoot>
+</table>

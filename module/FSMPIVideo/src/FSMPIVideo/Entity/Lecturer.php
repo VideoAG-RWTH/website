@@ -55,7 +55,7 @@ class Lecturer implements InputFilterAwareInterface, JsonSerializable
 	 * Getter for EMail
 	 * @return string
 	 */
-	public function getEMail(){ return $this->email; }
+	public function getEmail(){ return $this->email; }
 
 	/** 
 	 * Setter for ID
@@ -73,7 +73,7 @@ class Lecturer implements InputFilterAwareInterface, JsonSerializable
 	 * Setter for EMail
 	 * @param string $email
 	 */
-	public function setEMail($email){ $this->email = $email; }
+	public function setEmail($email){ $this->email = $email; }
 	
 	/**
 	 * Populate from an array.
@@ -84,7 +84,11 @@ class Lecturer implements InputFilterAwareInterface, JsonSerializable
 		if(!empty($data['id']))
 			$this->setId($data['id']);
 		$this->setName($data['name']);
-		$this->setEMail($data['email']);
+		$this->setEmail($data['email']);
+	}
+	
+	public function getArrayCopy(){
+		return $this->jsonSerialize();
 	}
  
 	public function setInputFilter(InputFilterInterface $inputFilter){
@@ -153,7 +157,7 @@ class Lecturer implements InputFilterAwareInterface, JsonSerializable
 		$data = array(
 			"id" => $this->getId(),
 			"name" => $this->getName(),
-			"email" => $this->getEMail(),
+			"email" => $this->getEmail(),
 		);
 		return $data;
 	}

@@ -126,7 +126,7 @@ class EventMarker extends SuggestableItem
 		$this->setIsPublished($data['is_published']);
 		$this->setPublishedBy($data['published_by']);
 	}
- 
+
 	public function setInputFilter(InputFilterInterface $inputFilter){
 		throw new \Exception("Not used");
 	}

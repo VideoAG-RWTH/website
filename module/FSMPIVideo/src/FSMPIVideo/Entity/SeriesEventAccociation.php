@@ -89,6 +89,10 @@ class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializa
 		$this->setCustomOrder($data['custom_order']);
 	}
  
+	public function getArrayCopy(){
+		return $this->jsonSerialize();
+	}
+	
 	public function setInputFilter(InputFilterInterface $inputFilter){
 		throw new \Exception("Not used");
 	}

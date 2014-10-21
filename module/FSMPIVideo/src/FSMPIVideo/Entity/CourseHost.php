@@ -67,6 +67,10 @@ class CourseHost implements InputFilterAwareInterface, JsonSerializable
 			$this->setId($data['id']);
 		$this->setName($data['name']);
 	}
+
+	public function getArrayCopy(){
+		return $this->jsonSerialize();
+	}
  
 	public function setInputFilter(InputFilterInterface $inputFilter){
 		throw new \Exception("Not used");

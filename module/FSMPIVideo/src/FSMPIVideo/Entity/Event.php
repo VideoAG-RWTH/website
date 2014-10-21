@@ -128,7 +128,7 @@ class Event extends ListedItem
 		$this->setDuration($data['duration']);
 		$this->setSpeaker($data['speaker']);
 	}
- 
+
 	public function setInputFilter(InputFilterInterface $inputFilter){
 		throw new \Exception("Not used");
 	}

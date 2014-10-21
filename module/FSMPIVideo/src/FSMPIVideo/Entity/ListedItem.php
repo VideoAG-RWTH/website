@@ -388,6 +388,10 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 		$this->setThumbnailImage($data['thumbnail_image']);
 	}
  
+	public function getArrayCopy(){
+		return $this->jsonSerialize();
+	}
+	
 	public function setInputFilter(InputFilterInterface $inputFilter){
 		throw new \Exception("Not used");
 	}

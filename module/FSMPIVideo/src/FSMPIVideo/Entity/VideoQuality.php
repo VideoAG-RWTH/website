@@ -87,6 +87,10 @@ class VideoQuality implements InputFilterAwareInterface, JsonSerializable
 		$this->setHeight($data['height']);
 	}
  
+	public function getArrayCopy(){
+		return $this->jsonSerialize();
+	}
+	
 	public function setInputFilter(InputFilterInterface $inputFilter){
 		throw new \Exception("Not used");
 	}

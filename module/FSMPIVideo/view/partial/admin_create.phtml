@@ -1,0 +1,19 @@
+<?php
+/** 
+ * @var string $title Page Title
+ * @var string $list_route Route to this list
+ * @var string $create_route Route to create new entry
+ * @var Form $form Creation form
+ */
+
+
+
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', $this->url($this->create_route));
+$form->setAttribute('method', 'post');
+?>
+
+<h1><?php echo $this->translate($this->title) ?></h1>
+
+<?php include 'admin_form.phtml'; ?>

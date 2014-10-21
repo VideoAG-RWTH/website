@@ -116,7 +116,14 @@ class User extends ZfcUserEntity implements JsonSerializable
      */
 	public function setCodedDirectory($coded_directory){ $this->coded_directory = $coded_directory; return $this; }
 
-
+	public function getArrayCopy(){
+		return $this->jsonSerialize();
+	}
+	
+	public function __toString(){
+		return $this->getDisplayName();
+	}
+	
 	public function toJson(){
 		$data = $this->jsonSerialize();
 		return Json::encode($data, true, array('silenceCyclicalExceptions' => true));

@@ -17,6 +17,8 @@ use JsonSerializable;
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\Table(name="suggestable_item")
  * @property int $id
+ * @property DateTime $suggested_at
+ * @property User $suggested_by
  */
 class SuggestableItem implements InputFilterAwareInterface, JsonSerializable
 {
@@ -88,6 +90,10 @@ class SuggestableItem implements InputFilterAwareInterface, JsonSerializable
 		$this->setSuggestedBy($data['suggested_by']);
 	}
  
+	public function getArrayCopy(){
+		return $this->jsonSerialize();
+	}
+	
 	public function setInputFilter(InputFilterInterface $inputFilter){
 		throw new \Exception("Not used");
 	}

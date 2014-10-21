@@ -1,10 +1,93 @@
 <?php
 namespace FSMPIVideo;
 
+function create_admin_navigation($label, $controller){
+	return array(
+		'label' => $label,
+		'route' => 'zfcadmin/'.$controller.'/list',
+		'pages' => array(
+			'create' => array('label' => 'New '.$label,  'route' => 'zfcadmin/'.$controller.'/create'),
+			'edit'   => array('label' => 'Edit '.$label, 'route' => 'zfcadmin/'.$controller.'/edit'),
+		),
+	);
+}
+
+function create_child_route($controller){
+	return array(
+        'type' => 'Literal',
+        'options' => array(
+            'route' => '/'.$controller,
+            'defaults' => array(
+                'controller' => $controller,
+                'action'     => 'index',
+            ),
+        ),
+        'child_routes' => array(
+			'list' => array(
+				'type' => 'Segment',
+				'options' => array(
+					'route' => '/list[/:p]',
+					'defaults' => array(
+						'controller' => $controller,
+						'action'     => 'list',
+					),
+					'constraints' => array(
+						'p'         => '[0-9]*',
+					),
+				),
+			),
+			'create' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route' => '/create',
+					'defaults' => array(
+						'controller' => $controller,
+						'action'     => 'create'
+					),
+				),
+			),
+			'edit' => array(
+				'type' => 'Segment',
+				'options' => array(
+					'route' => '/edit/:id',
+					'defaults' => array(
+						'controller' => $controller,
+						'action'     => 'edit',
+						'id'     => 0
+					),
+					'constraints' => array(
+						'id'         => '[0-9]+',
+					),
+				),
+			),
+			'delete' => array(
+				'type' => 'Segment',
+				'options' => array(
+					'route' => '/delete/:id',
+					'defaults' => array(
+						'controller' => $controller,
+						'action'     => 'delete',
+						'id'     => 0
+					),
+					'constraints' => array(
+						'id'         => '[0-9]+',
+					),
+				),
+			),
+		),
+    );	
+}
+
 return array(
 	'controllers' => array(
 		'invokables' => array(
-			'FSMPIVideo\Controller\Index' => 'FSMPIVideo\Controller\IndexController'
+			'FSMPIVideo\Controller\Index' => 'FSMPIVideo\Controller\IndexController',
+			'course' => 'FSMPIVideo\Controller\CourseController',
+			'coursetype' => 'FSMPIVideo\Controller\CourseTypeController',
+			'coursehost' => 'FSMPIVideo\Controller\CourseHostController',
+			'lecturer' => 'FSMPIVideo\Controller\LecturerController',
+			'videoquality' => 'FSMPIVideo\Controller\VideoQualityController',
+			'suggestedtitle' => 'FSMPIVideo\Controller\SuggestedTitleController',
 		),
 	),
 	
@@ -18,6 +101,16 @@ return array(
 						'controller' => 'FSMPIVideo\Controller\Index',
 						'action'     => 'index',
 					),
+				),
+			),
+			'zfcadmin' => array(
+				'child_routes' => array(
+	                'course' => create_child_route('course'),
+	                'coursetype' => create_child_route('coursetype'),
+	                'coursehost' => create_child_route('coursehost'),
+	                'lecturer' => create_child_route('lecturer'),
+	                'videoquality' => create_child_route('videoquality'),
+	                'suggestedtitle' => create_child_route('suggestedtitle'),
 				),
 			),
 		),
@@ -70,7 +163,16 @@ return array(
 			array('label' => 'FSMPI',    'route' => 'home'),
 			array('label' => 'VAMPIR',   'route' => 'home')
 		),
+		'admin' => array(
+			'course' => create_admin_navigation('Course', 'course'),
+			'coursetype' => create_admin_navigation('CourseType', 'coursetype'),
+			'coursehost' => create_admin_navigation('CourseHost', 'coursehost'),
+			'lecturer' => create_admin_navigation('Lecturer', 'lecturer'),
+			'videoquality' => create_admin_navigation('VideoQuality', 'videoquality'),
+			'suggestedtitle' => create_admin_navigation('SuggestedTitle', 'suggestedtitle'),
+		),
 	),
+
 	
     // Placeholder for console routes
     'console' => array(

@@ -82,6 +82,12 @@ class Course implements InputFilterAwareInterface, JsonSerializable
 	 */
 	public function getType(){ return $this->type; }
 	
+	/**
+	 * Getter for Type name
+	 * @return CourseType
+	 */
+	public function getTypeName(){ return $this->type->getName(); }
+	
 	/** 
 	 * Setter for ID
 	 * @param int $id
@@ -124,7 +130,11 @@ class Course implements InputFilterAwareInterface, JsonSerializable
 		$this->setSubject($data['subject']);
 		$this->setType($data['type']);
 	}
- 
+
+	public function getArrayCopy(){
+		return $this->jsonSerialize();
+	}
+
 	public function setInputFilter(InputFilterInterface $inputFilter){
 		throw new \Exception("Not used");
 	}
