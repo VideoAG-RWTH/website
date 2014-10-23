@@ -17,10 +17,10 @@ use FSMPIVideo\Entity\SuggestableItem;
  * @ORM\Entity
  * @ORM\Table(name="event_marker")
  * @property Event $event
- * @property float $time_seconds
+ * @property float $timeSeconds
  * @property string $title
- * @property User $published_by
- * @property boolean $is_published
+ * @property User $publishedBy
+ * @property boolean $isPublished
  */
 class EventMarker extends SuggestableItem
 {
@@ -35,7 +35,7 @@ class EventMarker extends SuggestableItem
 	/**
 	 * @ORM\Column(type="float");
 	 */
-	protected $time_seconds;
+	protected $timeSeconds;
  
 	/**
 	 * @ORM\Column(type="string");
@@ -45,13 +45,13 @@ class EventMarker extends SuggestableItem
 	/**
 	 * @ORM\Column(type="boolean");
 	 */
-	protected $is_published;
+	protected $isPublished;
  
 	/**
      * @ORM\ManyToOne(targetEntity="User")
-	 * @ORM\JoinColumn(name="published_by_id", referencedColumnName="user_id")
+	 * @ORM\JoinColumn(name="publishedBy_id", referencedColumnName="user_id")
 	 */
-	protected $published_by;
+	protected $publishedBy;
  
 	/**
 	 * Getter for Event
@@ -63,7 +63,7 @@ class EventMarker extends SuggestableItem
 	 * Getter for Time
 	 * @return float
 	 */
-	public function getTime(){ return $this->time_seconds; }
+	public function getTime(){ return $this->timeSeconds; }
 	
 	/**
 	 * Getter for Title
@@ -75,13 +75,13 @@ class EventMarker extends SuggestableItem
 	 * Getter for IsPublished
 	 * @return boolean
 	 */
-	public function getIsPublished(){ return $this->is_published; }
+	public function getIsPublished(){ return $this->isPublished; }
 	
 	/**
 	 * Getter for PublishedBy
 	 * @return User
 	 */
-	public function getPublishedBy(){ return $this->published_by; }
+	public function getPublishedBy(){ return $this->publishedBy; }
 	
 	/** 
 	 * Setter for Event
@@ -93,7 +93,7 @@ class EventMarker extends SuggestableItem
 	 * Setter for Time
 	 * @param float $time
 	 */
-	public function setTime($time){ $this->time_seconds = $time; }
+	public function setTime($time){ $this->timeSeconds = $time; }
 	
 	/** 
 	 * Setter for Title
@@ -103,15 +103,15 @@ class EventMarker extends SuggestableItem
 	
 	/** 
 	 * Setter for IsPublished
-	 * @param boolean $is_published
+	 * @param boolean $isPublished
 	 */
-	public function setIsPublished($is_published){ $this->is_published = $is_published; }
+	public function setIsPublished($isPublished){ $this->isPublished = $isPublished; }
 	
 	/** 
 	 * Setter for PublishedBy
-	 * @param User $published_by
+	 * @param User $publishedBy
 	 */
-	public function setPublishedBy($published_by){ $this->published_by = $published_by; }
+	public function setPublishedBy($publishedBy){ $this->publishedBy = $publishedBy; }
 	
 	/**
 	 * Populate from an array.
@@ -121,10 +121,10 @@ class EventMarker extends SuggestableItem
 	public function populate($data = array()){
 		parent::populate($data);
 		$this->setEvent($data['event']);
-		$this->setTime($data['time_seconds']);
+		$this->setTime($data['timeSeconds']);
 		$this->setTitle($data['title']);
-		$this->setIsPublished($data['is_published']);
-		$this->setPublishedBy($data['published_by']);
+		$this->setIsPublished($data['isPublished']);
+		$this->setPublishedBy($data['publishedBy']);
 	}
 
 	public function setInputFilter(InputFilterInterface $inputFilter){
@@ -152,7 +152,7 @@ class EventMarker extends SuggestableItem
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'is_published',
+				'name'       => 'isPublished',
 				'required'   => true,
 				'filters' => array(
 			        array('name' => 'Boolean'),
@@ -160,7 +160,7 @@ class EventMarker extends SuggestableItem
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'time_seconds',
+				'name'       => 'timeSeconds',
 				'required'   => true,
 				'validators' => array(
 			        array('name' => 'Float'),
@@ -181,10 +181,10 @@ class EventMarker extends SuggestableItem
 	public function jsonSerialize(){
 		$data = array(
 			//"event" => $this->getEvent(),
-			"time_seconds" => $this->getTime(),
+			"timeSeconds" => $this->getTime(),
 			"title" => $this->getTitle(),
-			"is_published" => $this->getIsPublished(),
-			"published_by" => $this->getPublishedBy()
+			"isPublished" => $this->getIsPublished(),
+			"publishedBy" => $this->getPublishedBy()
 		);
 		return array_merge(parent::jsonSerialize(), $data);
 	}

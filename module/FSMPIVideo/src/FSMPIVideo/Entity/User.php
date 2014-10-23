@@ -18,7 +18,11 @@ class User extends ZfcUserEntity implements JsonSerializable
 	const ROLE_MODERATOR = 20;
 	const ROLE_REPORTER = 30;
 	
-	public static $roles = array(
+	public static function getRoles(){
+		return self::$roles;
+	}
+	
+	protected static $roles = array(
 		self::ROLE_ADMIN => 'Admin', 
 		self::ROLE_MODERATOR => 'Moderator', 
 		self::ROLE_REPORTER => 'Reporter'
@@ -42,7 +46,7 @@ class User extends ZfcUserEntity implements JsonSerializable
 	/**
 	 * @ORM\Column(type="string")
 	 */
-	public $coded_directory;
+	public $codedDirectory;
 	
 
     /**
@@ -82,7 +86,7 @@ class User extends ZfcUserEntity implements JsonSerializable
      *
      * @return string
      */
-	public function getCodedDirectory(){ return $this->coded_directory; }
+	public function getCodedDirectory(){ return $this->codedDirectory; }
 
     /**
      * Set role.
@@ -111,10 +115,10 @@ class User extends ZfcUserEntity implements JsonSerializable
     /**
      * Set coded directory.
      *
-     * @param string $coded_directory
+     * @param string $codedDirectory
      * @return UserInterface
      */
-	public function setCodedDirectory($coded_directory){ $this->coded_directory = $coded_directory; return $this; }
+	public function setCodedDirectory($codedDirectory){ $this->codedDirectory = $codedDirectory; return $this; }
 
 	public function getArrayCopy(){
 		return $this->jsonSerialize();
@@ -139,7 +143,7 @@ class User extends ZfcUserEntity implements JsonSerializable
 			'role' => $this->getRole(),
 			'jabber' => $this->getJabber(),
 			'phone' => $this->getPhone(),
-			'coded_directory' => $this->getCodedDirectory(),
+			'codedDirectory' => $this->getCodedDirectory(),
 		);
 		return $data;
 	}

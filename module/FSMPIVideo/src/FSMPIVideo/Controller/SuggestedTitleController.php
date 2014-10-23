@@ -7,12 +7,12 @@ class SuggestedTitleController extends ListController
 		$params = array(
 			'list_columns' => array(
 				'Id' => 'id', 
-				'Suggested at' => 'suggested_at', 
-				'Suggested by' => 'suggested_by', 
-				'Listed Item' => 'listed_item', 
+				'Suggested at' => 'suggestedAt', 
+				'Suggested by' => 'suggestedBy', 
+				'Listed Item' => 'listedItem', 
 				'Title' => 'title', 
-				'IsViewed' => 'is_viewed', 
-				'Viewed by' => 'viewed_by'
+				'IsViewed' => 'isViewed', 
+				'Viewed by' => 'viewedBy'
 			)
 		);
 		parent::__construct($params);

@@ -8,6 +8,8 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface; 
 use Zend\Json\Json;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 use JsonSerializable;
 use DateTime;
 
@@ -22,27 +24,31 @@ use DateTime;
  * @property string $alias
  * @property string $title
  * @property string $description
- * @property string $internal_comment
+ * @property string $internalComment
  * @property string $semester
- * @property User $created_by
- * @property string $created_at
- * @property User $super_admin
- * @property string $last_change
- * @property User $changed_by
- * @property boolean $is_downloadable
- * @property boolean $is_listed
- * @property boolean $is_accessable
- * @property string $access_type
- * @property array $responsible_users
- * @property string $responsible_text
+ * @property User $createdBy
+ * @property DateTime $createdAt
+ * @property User $superAdmin
+ * @property DateTime $lastChange
+ * @property User $changedBy
+ * @property boolean $isDownloadable
+ * @property boolean $isListed
+ * @property boolean $isAccessable
+ * @property string $accessType
+ * @property array $responsibleUsers
+ * @property string $responsibleText
  * @property string $username
  * @property string $password
- * @property string $thumbnail_image
+ * @property string $thumbnailImage
  */
 class ListedItem implements InputFilterAwareInterface, JsonSerializable
 {
 	protected $inputFilter;
  	
+	public static function getAccessTypes(){
+		return array('public' => 'Public', 'intern' => 'Intern', 'password' => 'Password');
+	} 
+	
 	/**
 	 * @ORM\Id
 	 * @ORM\Column(type="integer");
@@ -68,7 +74,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	/**
 	 * @ORM\Column(type="text")
 	 */
-	protected $internal_comment;
+	protected $internalComment;
 	
 	/**
 	 * @ORM\Column(type="string")
@@ -79,49 +85,49 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
      * @ORM\ManyToOne(targetEntity="User")
 	 * @ORM\JoinColumn(name="created_by_id", referencedColumnName="user_id")
 	 */
-	protected $created_by;
+	protected $createdBy;
 	
 	/**
 	 * @ORM\Column(type="datetime")
 	 */
-	protected $created_at;
+	protected $createdAt;
 	
 	/**
      * @ORM\ManyToOne(targetEntity="User")
 	 * @ORM\JoinColumn(name="super_admin_id", referencedColumnName="user_id")
 	 */
-	protected $super_admin;
+	protected $superAdmin;
 	
 	/**
 	 * @ORM\Column(type="datetime")
 	 */
-	protected $last_change;
+	protected $lastChange;
 	
 	/**
      * @ORM\ManyToOne(targetEntity="User")
 	 * @ORM\JoinColumn(name="changed_by_id", referencedColumnName="user_id")
 	 */
-	protected $changed_by;
+	protected $changedBy;
 	
 	/**
 	 * @ORM\Column(type="boolean")
 	 */
-	protected $is_downloadable;
+	protected $isDownloadable;
 	
 	/**
 	 * @ORM\Column(type="boolean")
 	 */
-	protected $is_listed;
+	protected $isListed;
 	
 	/**
 	 * @ORM\Column(type="boolean")
 	 */
-	protected $is_accessable;
+	protected $isAccessable;
 	
 	/**
 	 * @ORM\Column(type="string")
 	 */
-	protected $access_type;
+	protected $accessType;
 	
 	/**
      * @ORM\ManyToMany(targetEntity="User")
@@ -134,12 +140,12 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	 *   }
 	 * )
 	 */
-	protected $responsible_users;
+	protected $responsibleUsers;
 	
 	/**
 	 * @ORM\Column(type="string")
 	 */
-	protected $responsible_text;
+	protected $responsibleText;
 	
 	/**
 	 * @ORM\Column(type="string")
@@ -154,7 +160,12 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	/**
 	 * @ORM\Column(type="text")
 	 */
-	protected $thumbnail_image;
+	protected $thumbnailImage;
+	
+	
+	public function __construct(){
+		$this->responsibleUsers = new ArrayCollection;
+	}
 	
 	//---------------------------
 	// GETTER
@@ -182,7 +193,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	/**
 	 * @return string
 	 */
-	public function getInternalComment(){ return $this->internal_comment; }
+	public function getInternalComment(){ return $this->internalComment; }
 
 	/**
 	 * @return string
@@ -192,57 +203,57 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	/**
 	 * @return User
 	 */
-	public function getCreatedBy(){ return $this->created_by; }
+	public function getCreatedBy(){ return $this->createdBy; }
 
 	/**
 	 * @return DateTime
 	 */
-	public function getCreatedAt(){ return $this->created_at; }
+	public function getCreatedAt(){ return $this->createdAt; }
 
 	/**
 	 * @return User
 	 */
-	public function getSuperAdmin(){ return $this->super_admin; }
+	public function getSuperAdmin(){ return $this->superAdmin; }
 
 	/**
 	 * @return DateTime
 	 */
-	public function getLastChange(){ return $this->last_change; }
+	public function getLastChange(){ return $this->lastChange; }
 
 	/**
 	 * @return User
 	 */
-	public function getChangedBy(){ return $this->changed_by; }
+	public function getChangedBy(){ return $this->changedBy; }
 
 	/**
 	 * @return boolean
 	 */
-	public function getIsDownloadable(){ return $this->is_downloadable; }
+	public function getIsDownloadable(){ return $this->isDownloadable; }
 
 	/**
 	 * @return boolean
 	 */
-	public function getIsListed(){ return $this->is_listed; }
+	public function getIsListed(){ return $this->isListed; }
 
 	/**
 	 * @return boolean
 	 */
-	public function getIsAccessable(){ return $this->is_accessable; }
+	public function getIsAccessable(){ return $this->isAccessable; }
 
 	/**
 	 * @return string
 	 */
-	public function getAccessType(){ return $this->access_type; }
+	public function getAccessType(){ return $this->accessType; }
 
 	/**
 	 * @return array
 	 */
-	public function getResponsibleUsers(){ return $this->responsible_users; }
+	public function getResponsibleUsers(){ return $this->responsibleUsers; }
 
 	/**
 	 * @return string
 	 */
-	public function getResponsibleText(){ return $this->responsible_text; }
+	public function getResponsibleText(){ return $this->responsibleText; }
 
 	/**
 	 * @return string
@@ -257,7 +268,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	/**
 	 * @return string
 	 */
-	public function getThumbnailImage(){ return $this->thumbnail_image; }
+	public function getThumbnailImage(){ return $this->thumbnailImage; }
 	
 	//---------------------------
 	// Setter
@@ -285,9 +296,9 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	public function setDescription($description){ $this->description = $description; }
 
 	/**
-	 * @param string $internal_comment
+	 * @param string $internalComment
 	 */
-	public function setInternalComment($internal_comment){ $this->internal_comment = $internal_comment; }
+	public function setInternalComment($internalComment){ $this->internalComment = $internalComment; }
 
 	/**
 	 * @param string $semester
@@ -295,54 +306,54 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	public function setSemester($semester){ $this->semester = $semester; }
 
 	/**
-	 * @param User $created_by
+	 * @param User $createdBy
 	 */
-	public function setCreatedBy($created_by){ $this->created_by =  $created_by; }
+	public function setCreatedBy($createdBy){ $this->createdBy =  $createdBy; }
 
 	/**
-	 * @param DateTime $created_at
+	 * @param DateTime $createdAt
 	 */
-	public function setCreatedAt($created_at){ $this->created_at = $created_at; }
+	public function setCreatedAt($createdAt){ $this->createdAt = $createdAt; }
 
 	/**
-	 * @param User $super_admin
+	 * @param User $superAdmin
 	 */
-	public function setSuperAdmin($super_admin){ $this->super_admin = $super_admin; }
+	public function setSuperAdmin($superAdmin){ $this->superAdmin = $superAdmin; }
 
 	/**
-	 * @param DateTime $last_change
+	 * @param DateTime $lastChange
 	 */
-	public function setLastChange($last_change){ $this->last_change = $last_change; }
+	public function setLastChange($lastChange){ $this->lastChange = $lastChange; }
 
 	/**
-	 * @param User $changed_by
+	 * @param User $changedBy
 	 */
-	public function setChangedBy($changed_by){ $this->changed_by = $changed_by; }
+	public function setChangedBy($changedBy){ $this->changedBy = $changedBy; }
 
 	/**
-	 * @param boolean $is_downloadable
+	 * @param boolean $isDownloadable
 	 */
-	public function setIsDownloadable($is_downloadable){ $this->is_downloadable = $is_downloadable; }
+	public function setIsDownloadable($isDownloadable){ $this->isDownloadable = $isDownloadable; }
 
 	/**
-	 * @param boolean $is_listed
+	 * @param boolean $isListed
 	 */
-	public function setIsListed($is_listed){ $this->is_listed = $is_downloadable; }
+	public function setIsListed($isListed){ $this->isListed = $isListed; }
 
 	/**
-	 * @param boolean $is_accessable
+	 * @param boolean $isAccessable
 	 */
-	public function setIsAccessable($is_accessable){ $this->is_accessable = $is_accessable; }
+	public function setIsAccessable($isAccessable){ $this->isAccessable = $isAccessable; }
 
 	/**
-	 * @param string $access_type
+	 * @param string $accessType
 	 */
-	public function setAccessType($access_type){ $this->access_type = $access_type; }
+	public function setAccessType($accessType){ $this->accessType = $accessType; }
 
 	/**
-	 * @param string $responsible_text
+	 * @param string $responsibleText
 	 */
-	public function setResponsibleText($responsible_text){ $this->responsible_text = $responsible_text; }
+	public function setResponsibleText($responsibleText){ $this->responsibleText = $responsibleText; }
 
 	/**
 	 * @param string $username
@@ -355,10 +366,19 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	public function setPassword($password){ $this->password = $password; }
 
 	/**
-	 * @param string $thumbnail_image
+	 * @param string $thumbnailImage
 	 */
-	public function setThumbnailImage($thumbnail_image){ $this->thumbnail_image = $thumbnail_image; }
+	public function setThumbnailImage($thumbnailImage){ $this->thumbnailImage = $thumbnailImage; }
+	
+	public function addResponsibleUsers($users){
+		foreach($users as $user)
+			$this->responsibleUsers->add($user);
+	}
 
+	public function removeResponsibleUsers($users){
+		foreach($users as $user)
+			$this->responsibleUsers->removeElement($user);
+	}
 	
 	/**
 	 * Populate from an array.
@@ -371,21 +391,21 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 		$this->setAlias($data['alias']);
 		$this->setTitle($data['title']);
 		$this->setDescription($data['description']);
-		$this->setInternalComment($data['internal_comment']);
+		$this->setInternalComment($data['internalComment']);
 		$this->setSemester($data['semester']);
-		$this->setCreatedBy($data['created_by']);
-		$this->setCreatedAt($data['created_at']);
-		$this->setSuperAdmin($data['super_admin']);
-		$this->setLastChange($data['last_change']);
-		$this->setChangedBy($data['changed_by']);
-		$this->setIsDownloadable($data['is_downloadable']);
-		$this->setIsListed($data['is_accessable']);
-		$this->setIsAccessable($data['is_listed']);
-		$this->setAccessType($data['access_type']);
-		$this->setResponsibleText($data['responsible_text']);
+		$this->setCreatedBy($data['createdBy']);
+		$this->setCreatedAt($data['createdAt']);
+		$this->setSuperAdmin($data['superAdmin']);
+		$this->setLastChange($data['lastChange']);
+		$this->setChangedBy($data['changedBy']);
+		$this->setIsDownloadable($data['isDownloadable']);
+		$this->setIsListed($data['isAccessable']);
+		$this->setIsAccessable($data['isListed']);
+		$this->setAccessType($data['accessType']);
+		$this->setResponsibleText($data['responsibleText']);
 		$this->setUsername($data['username']);
 		$this->setPassword($data['password']);
-		$this->setThumbnailImage($data['thumbnail_image']);
+		$this->setThumbnailImage($data['thumbnailImage']);
 	}
  
 	public function getArrayCopy(){
@@ -442,7 +462,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'internal_comment',
+				'name'       => 'internalComment',
 				'required'   => false,
 				'filters' => array(
 			        array('name' => 'StripTags'),
@@ -460,7 +480,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'access_type',
+				'name'       => 'accessType',
 				'required'   => true,
 				'filters' => array(
 			        array('name' => 'StripTags'),
@@ -469,8 +489,8 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'responsible_text',
-				'required'   => true,
+				'name'       => 'responsibleText',
+				'required'   => false,
 				'filters' => array(
 			        array('name' => 'StripTags'),
 			        array('name' => 'StringTrim'),
@@ -478,7 +498,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'is_downloadable',
+				'name'       => 'isDownloadable',
 				'required'   => true,
 				'filters' => array(
 			        array('name' => 'Boolean'),
@@ -486,7 +506,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'is_listed',
+				'name'       => 'isListed',
 				'required'   => true,
 				'filters' => array(
 			        array('name' => 'Boolean'),
@@ -494,7 +514,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			)));
 		
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'is_accessable',
+				'name'       => 'isAccessable',
 				'required'   => true,
 				'filters' => array(
 			        array('name' => 'Boolean'),
@@ -502,8 +522,26 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			)));
 			
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'username',
+				'name'       => 'accessType',
 				'required'   => true,
+				'filters' => array(
+			        array('name' => 'StripTags'),
+			        array('name' => 'StringTrim'),
+				),
+				'validators' => array(
+					array(
+						'name' => 'InArray',
+						'options' => array(
+							'haystack' => array_keys(self::getAccessTypes()),
+							'strict' => 'false'
+						)
+					),
+				),
+			)));
+			
+			$inputFilter->add($factory->createInput(array(
+				'name'       => 'username',
+				'required'   => false,
 				'filters' => array(
 			        array('name' => 'StripTags'),
 			        array('name' => 'StringTrim'),
@@ -512,7 +550,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 
 			$inputFilter->add($factory->createInput(array(
 				'name'       => 'password',
-				'required'   => true,
+				'required'   => false,
 				'filters' => array(
 			        array('name' => 'StripTags'),
 			        array('name' => 'StringTrim'),
@@ -520,14 +558,15 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'thumbnail_image',
-				'required'   => true,
+				'name'       => 'thumbnailImage',
+				'required'   => false,
 				'filters' => array(
 			        array('name' => 'StripTags'),
 			        array('name' => 'StringTrim'),
 				),
 			)));
- 
+ 			
+			
 			$this->inputFilter = $inputFilter;        
 		}
 
@@ -553,22 +592,22 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			"alias" => $this->getAlias(),
 			"title" => $this->getTitle(),
 			"description" => $this->getDescription(),
-			"internal_comment" => $this->getInternalComment(),
+			"internalComment" => $this->getInternalComment(),
 			"semester" => $this->getSemester(),
-			"created_by" => $this->getCreatedBy(),
-			"created_at" => $this->getCreatedAt(),
-			"super_admin" => $this->getSuperAdmin(),
-			"last_change" => $this->getLastChange(),
-			"changed_by" => $this->getChangedBy(),
-			"is_downloadable" => $this->getIsDownloadable(),
-			"is_listed" => $this->getIsListed(),
-			"is_accessable" => $this->getIsAccessable(),
-			"access_type" => $this->getAccessType(),
-			"responsible_users" => $this->getResponsibleUsers(),
-			"responsible_text" => $this->getResponsibleText(),
+			"createdBy" => $this->getCreatedBy(),
+			"createdAt" => $this->getCreatedAt(),
+			"superAdmin" => $this->getSuperAdmin(),
+			"lastChange" => $this->getLastChange(),
+			"changedBy" => $this->getChangedBy(),
+			"isDownloadable" => $this->getIsDownloadable(),
+			"isListed" => $this->getIsListed(),
+			"isAccessable" => $this->getIsAccessable(),
+			"accessType" => $this->getAccessType(),
+			"responsibleUsers" => $this->getResponsibleUsers(),
+			"responsibleText" => $this->getResponsibleText(),
 			"username" => $this->getUsername(),
 			"password" => $this->getPassword(),
-			"thumbnail_image" => $this->getThumbnailImage()
+			"thumbnailImage" => $this->getThumbnailImage()
 		);
 		return $data;
 	}

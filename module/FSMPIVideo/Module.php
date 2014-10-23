@@ -135,7 +135,7 @@ class Module
 					'type' => 'Select',
 					'options' => array(
 						'label' => 'Role',
-						'options' => User::$roles,
+						'options' => User::getRoles(),
 					),
 					'attributes' => array(
 						'id' => 'user_role',
@@ -238,7 +238,7 @@ class Module
 						array(
 							'name' => 'InArray',
 							'options' => array(
-								'haystack' => array_keys(User::$roles),
+								'haystack' => array_keys(User::getRoles()),
 								'strict' => 'false'
 							)
 						),

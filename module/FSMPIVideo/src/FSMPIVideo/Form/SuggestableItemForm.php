@@ -15,7 +15,7 @@ class SuggestableItemForm extends Form
 		));
 		
 		$this->add(array(
-			'name' => 'suggested_at',
+			'name' => 'suggestedAt',
 			'type' => 'DateTimeSelect',
 			'options' => array(
 				'label' => 'Suggested At',
@@ -27,13 +27,13 @@ class SuggestableItemForm extends Form
 		));
 		
 		$this->add(array(
-			'name' => 'type',
+			'name' => 'suggestedBy',
 			'type' => 'DoctrineModule\Form\Element\ObjectSelect',
 			'options' => array(
 				'object_manager' => $em,
 				'target_class' => 'FSMPIVideo\Entity\User',
 				'property' => 'displayName',
-				'label' => 'User',
+				'label' => 'Suggested By',
 				'display_empty_item' => true,
 				'empty_item_label'   => '---',
 			),

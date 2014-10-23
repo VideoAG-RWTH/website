@@ -9,11 +9,6 @@ class SuggestedTitleForm extends SuggestableItemForm
 		parent::__construct($em, 'suggestedtitle');
 		
 		$this->add(array(
-			'name' => 'id',
-			'type' => 'Hidden',
-		));
-		
-		$this->add(array(
 			'name' => 'title',
 			'type' => 'Text',
 			'options' => array(
@@ -26,7 +21,7 @@ class SuggestedTitleForm extends SuggestableItemForm
 		));
 		
 		$this->add(array(
-			'name' => 'listed_item',
+			'name' => 'listedItem',
 			'type' => 'DoctrineModule\Form\Element\ObjectSelect',
 			'options' => array(
 				'object_manager' => $em,
@@ -40,22 +35,23 @@ class SuggestedTitleForm extends SuggestableItemForm
 		));
 		
 		$this->add(array(
-			'name' => 'is_viewed',
+			'name' => 'isViewed',
 			'type' => 'Checkbox',
 			'options' => array(
-				'use_hidden_element' => true,
 				'checked_value' => '1',
 				'unchecked_value' => '0',
 				'label' => 'Is Viewed',
 			),
 			'attributes' => array(
 				'id' => 'suggestedtitle_is_viewed',
-				'class' => 'form-control',
+				'class' => 'toggle_switch',
+				'data-on-text' => 'Yes',
+				'data-off-text' => 'No'
 			)
 		));
 
 		$this->add(array(
-			'name' => 'viewed_by',
+			'name' => 'viewedBy',
 			'type' => 'DoctrineModule\Form\Element\ObjectSelect',
 			'options' => array(
 				'object_manager' => $em,

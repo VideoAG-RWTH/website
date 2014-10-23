@@ -14,6 +14,10 @@
  * @var array $rows Array of Objects to be shown
  * @var int $page Page number for pagination
  * @var int $page_length Number of items on one page
+ *
+ * @var string $parent_list_route Route to parent List
+ * @var string $parent_param_name Parent ID param in all sublist views
+ * @var string $parent_id Parent ID
  */
 
 if(empty($this->delete_param_name))
@@ -49,6 +53,11 @@ array_walk($parts, function (&$val) {
     $val = ucfirst($val);
 });
 $idGetter = 'get' . implode('', $parts);
+
+$isSublist = false;
+if(!empty($this->parent_list_route))
+	$isSublist = true;
+
 ?>
 
 <h1><?php echo $this->translate($this->title) ?></h1>
@@ -56,7 +65,7 @@ $idGetter = 'get' . implode('', $parts);
 <div class="navbar filter-bar">
     <div class="navbar-inner">
         <div class="pull-right">
-            <a href="<?php echo $this->url($this->create_route) ?>" class="btn btn-primary">
+            <a href="<?php echo $this->url($this->create_route, $isSublist ? array($this->parent_param_name => $this->parent_id) : array()) ?>" class="btn btn-primary">
                 <?php echo $this->translate($this->create_text) ?>
             </a>
         </div>
@@ -77,15 +86,21 @@ $idGetter = 'get' . implode('', $parts);
         <tr>
             <?php foreach ($this->columns as $element): ?>
                 <td class="cell cell-<?php echo $this->escapeHtml($element) ?>">
-                    <?php echo call_user_func(array($row, $getters[$element])); ?>
+                    <?php 
+						$value = call_user_func(array($row, $getters[$element]));
+						if($value instanceof DateTime)
+							$value = $value->format('Y-m-d H:i');
+						echo $value;
+					?>
                 </td>
             <?php endforeach; ?>
             <td class="cell cell-ctrls">
-                <a href="<?php echo $this->url($this->edit_route, array($this->edit_param_name => call_user_func(array($row, $idGetter)) )); ?>">
+				<?php $routeParams = $isSublist ? array($this->parent_param_name => $this->parent_id) : array(); ?>
+                <a href="<?php echo $this->url($this->edit_route, array_merge($routeParams, array($this->edit_param_name => call_user_func(array($row, $idGetter)) )) ); ?>">
                     <?php echo $this->translate('Edit') ?>
                 </a>
                 |
-                <a href="<?php echo $this->url($this->delete_route, array($this->delete_param_name => call_user_func(array($row, $idGetter)) )); ?>"
+                <a href="<?php echo $this->url($this->delete_route, array_merge($routeParams, array($this->delete_param_name => call_user_func(array($row, $idGetter)) )) ); ?>"
                    onclick="return confirm('<?php echo $this->translate($this->delete_warning_text) ?>')">
                     <?php echo $this->translate('Delete') ?>
                 </a>
@@ -96,7 +111,7 @@ $idGetter = 'get' . implode('', $parts);
     <tfoot>
     <tr>
         <td colspan="<?php echo count($this->columns) + 1; ?>">
-            <?php echo $this->paginationControl($paginator, 'Sliding', 'partial/admin_pagination.phtml', array('list_route' => $this->list_route)); ?>
+            <?php echo $this->paginationControl($paginator, 'Sliding', 'partial/admin_pagination.phtml', array('list_route' => $this->list_route, 'parent_param_name' => $this->parent_param_name, 'parent_id' => $this->parent_id)); ?>
         </td>
     </tr>
     </tfoot>

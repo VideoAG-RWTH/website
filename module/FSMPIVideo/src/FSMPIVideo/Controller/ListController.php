@@ -14,7 +14,7 @@ abstract class ListController extends AbstractActionController
 	 */
 	protected $em;
 	
-	private $params;
+	protected $params;
 	
 	/**
 	 * 
@@ -33,13 +33,16 @@ abstract class ListController extends AbstractActionController
 			'delete_warning_text' => 'Really delete '.$name.'?',
 			'create_text' => 'Add new '.$name,
 			'list_columns' => array('Id' => 'id'),
-			'page_length' => 10
+			'page_length' => 10,
+			'delete_param_name' => 'id',
+			'edit_param_name' => 'id',
+			'id_name' => 'id'
 		);
 		
 		$this->params = $params + $defaults;
 	}
 	
-	public function getName(){
+	protected function getName(){
 		$classname = get_class($this);
 		
 		$parts = explode("\\", $classname);
@@ -53,7 +56,7 @@ abstract class ListController extends AbstractActionController
 		return $classname;
 	}
 	
-	public function str_lreplace($search, $replace, $subject){
+	protected function str_lreplace($search, $replace, $subject){
 		$pos = strrpos($subject, $search);
 		if($pos !== false){
 			$subject = substr_replace($subject, $replace, $pos, strlen($search));
@@ -61,17 +64,20 @@ abstract class ListController extends AbstractActionController
 		return $subject;
 	}
 		
-	public function getAll(){
+	protected function getAll(){
 		$em = $this->getEntityManager();
 		$name = $this->getName();
 		$items = $em->getRepository("\\FSMPIVideo\\Entity\\".$name)->findAll();
 		return $items;
 	}
 	
-	public function getItem($id){
+	protected function getItem($id = null){
 		$em = $this->getEntityManager();
-		$name = $this->getName();
-		$item = $em->getRepository("\\FSMPIVideo\\Entity\\".$name)->find((int)$id);
+		$name = "\\FSMPIVideo\\Entity\\".$this->getName();
+		if($id)
+			$item = $em->getRepository($name)->find((int)$id);
+		else
+			$item = new $name();
 		return $item;
 	}
 	
@@ -86,25 +92,29 @@ abstract class ListController extends AbstractActionController
 		return $this->em;
 	}
 	
-
-	public function getForm(){
+	protected function getForm($name = null){
+		if(!$name)
+			$name = $this->getName();
 		$em = $this->getEntityManager();
-		$frmCls = '\\FSMPIVideo\\Form\\'.$this->getName() . 'Form';
+		$frmCls = '\\FSMPIVideo\\Form\\'.$name.'Form';
 		$form = new $frmCls($em);
         $form->setHydrator(new DoctrineObject($em));
 		return $form;
 	}
 	
 	public function indexAction(){
+		return $this->_redirectToList();
+	}
+	
+	public function _redirectToList(){
 		return $this->redirect()->toRoute($this->params['list_route']);
 	}
 	
 	public function listAction(){
 		$em = $this->getEntityManager();
 		$items = $this->getAll();
-		$page = $this->getEvent()->getRouteMatch()->getParam('p');
 		
-		$view = new ViewModel(array(
+		$params = array(
 			'title' => $this->params['list_title'],
 			'list_route' => $this->params['list_route'],
 			'create_route' => $this->params['create_route'],
@@ -114,9 +124,16 @@ abstract class ListController extends AbstractActionController
 			'create_text' => $this->params['create_text'],
 			'columns' => $this->params['list_columns'],
 			'rows' => $items,
-			'page' => $page,
 			'page_length' => $this->params['page_length']
-		));
+		);
+		return $this->_showList($params);
+	}
+	
+	protected function _showList($params){
+		$page = $this->getEvent()->getRouteMatch()->getParam('p');
+		$params['page'] = $page;
+		
+		$view = new ViewModel($params);
 		$view->setTemplate('partial/admin_list.phtml');
 		return $view;
 	}
@@ -125,28 +142,40 @@ abstract class ListController extends AbstractActionController
 		$em = $this->getEntityManager();
 		$form = $this->getForm();
         $request = $this->getRequest();
-
+		
         /** @var $request \Zend\Http\Request */
         if ($request->isPost()) {
-			$itemName = '\\FSMPIVideo\\Entity\\'.$this->getName();
-			$item = new $itemName();
-            $form->bind($item);
-            $form->setData($request->getPost());
-			
-            if ($form->isValid()) {
-				$em->persist($item);
-				$em->flush();
+			$item = $this->getItem();
+			if($this->_createItem($item, $form)){
 				$this->flashMessenger()->addSuccessMessage('The '.$this->getName().' was created');
 				return $this->redirect()->toRoute($this->params['list_route']);
-            }
+			}
         }
-		
-		$view = new ViewModel(array(
+		$params = array(
 			'title' => $this->params['create_title'],
 			'list_route' => $this->params['list_route'],
 			'create_route' => $this->params['create_route'],
 			'form' => $form,
-		));
+		);
+		return $this->_showCreateForm($params);
+	}
+	
+	protected function _createItem($item, $form){
+		$em = $this->getEntityManager();
+        $request = $this->getRequest();
+		
+        $form->bind($item);
+        $form->setData($request->getPost());
+        if ($form->isValid()) {
+			$em->persist($item);
+			$em->flush();
+			return true;
+        }
+		return false;
+	}
+	
+	protected function _showCreateForm($params){
+		$view = new ViewModel($params);
 		$view->setTemplate('partial/admin_create.phtml');
 		return $view;
 	}
@@ -154,10 +183,29 @@ abstract class ListController extends AbstractActionController
     public function editAction()
     {
 		$em = $this->getEntityManager();
-        $id = $this->getEvent()->getRouteMatch()->getParam('id');
+        $id = $this->getEvent()->getRouteMatch()->getParam($this->params['edit_param_name']);
         $item = $this->getItem($id);
 		
         $form = $this->getForm();
+
+		if($this->_editItem($item, $form)){
+            $this->flashMessenger()->addSuccessMessage('The '.$this->getName().' was edited');
+            return $this->redirect()->toRoute($this->params['list_route']);
+		}
+
+		$params = array(
+			'title' => $this->params['edit_title'],
+			'list_route' => $this->params['list_route'],
+			'edit_route' => $this->params['edit_route'],
+			'delete_route' => $this->params['delete_route'],
+			'delete_warning_text' => $this->params['delete_warning_text'],
+            'form' => $form,
+            'id' => $id
+		);
+		return $this->_showEditForm($params);
+    }
+	
+	protected function _editItem($item, $form){
 		$form->setBindOnValidate(false);
 		$form->bind($item);
 		
@@ -168,44 +216,44 @@ abstract class ListController extends AbstractActionController
 			if ($form->isValid()) {
 				$form->bindValues();
 				$em->flush();
-
-				// Redirect to list of albums
-                $this->flashMessenger()->addSuccessMessage('The '.$this->getName().' was edited');
-                return $this->redirect()->toRoute($this->params['list_route']);
+				
+				return true;
 			}
         }
-
-		$view = new ViewModel(array(
-			'title' => $this->params['edit_title'],
-			'list_route' => $this->params['list_route'],
-			'edit_route' => $this->params['edit_route'],
-			'delete_route' => $this->params['delete_route'],
-			'delete_warning_text' => $this->params['delete_warning_text'],
-            'form' => $form,
-            'id' => $id
-		));
+		return false;
+	}
+	
+	protected function _showEditForm($params){
+		$view = new ViewModel($params);
 		$view->setTemplate('partial/admin_edit.phtml');
 		return $view;
-    }
+	}
 
-    public function deleteAction()
-    {
-        $id = $this->getEvent()->getRouteMatch()->getParam('id');
+    public function deleteAction(){
+        $id = $this->getEvent()->getRouteMatch()->getParam($this->params['delete_param_name']);
 		
-		if(!$id){
-			return $this->redirect()->toRoute($this->params['list_route'], array());
-		}
+		if(!$id)
+			return $this->_redirectToList();
+		
 		$em = $this->getEntityManager();
 		$item = $this->getItem($id);
+		
+		if($this->_delteItem($item)){
+			$em->remove($item);
+			$em->flush();
+	        $this->flashMessenger()->addSuccessMessage('The '.$this->getName().' was deleted');
+		}
+		return $this->_redirectToList();
+    }
+	
+	protected function _delteItem($item){
 		if($item){
 			$em->remove($item);
 			$em->flush();
+			return true;
 		}
-		// Redirect to list of albums
-        $this->flashMessenger()->addSuccessMessage('The '.$this->getName().' was deleted');
-		return $this->redirect()->toRoute($this->params['list_route']);
-    }
-
+		return false;
+	}
 	
 	
 }

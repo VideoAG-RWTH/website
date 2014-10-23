@@ -16,22 +16,22 @@ use JsonSerializable;
  * @ORM\Table(name="video")
  * @property int $id
  * @property Event $event
- * @property User $source_user
- * @property float $length_seconds
+ * @property User $sourceUser
+ * @property float $lengthSeconds
  * @property int $height
  * @property int $width
- * @property float $aspect_ratio
+ * @property float $aspectRatio
  * @property float $framerate
  * @property string $codecs
  * @property VideoQuality $quality
  * @property float $speed
  * @property string $hash
- * @property User $assigned_by
- * @property DateTime $assigned_at
+ * @property User $assignedBy
+ * @property DateTime $assignedAt
  * @property string $filename
- * @property string $title_thumbnail
- * @property string $modaic_file
- * @property string $webvtt_file
+ * @property string $titleThumbnail
+ * @property string $modaicFile
+ * @property string $webvttFile
  */
 class Video implements InputFilterAwareInterface, JsonSerializable
 {
@@ -52,14 +52,14 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 
 	/**
      * @ORM\ManyToOne(targetEntity="User")
-	 * @ORM\JoinColumn(name="source_user_id", referencedColumnName="user_id")
+	 * @ORM\JoinColumn(name="sourceUser_id", referencedColumnName="user_id")
 	 */
-	protected $source_user;
+	protected $sourceUser;
 
 	/**
 	 * @ORM\Column(type="float");
 	 */
-	protected $length_seconds;
+	protected $lengthSeconds;
 
 	/**
 	 * @ORM\Column(type="integer");
@@ -74,7 +74,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	/**
 	 * @ORM\Column(type="float");
 	 */
-	protected $aspect_ratio;
+	protected $aspectRatio;
 
 	/**
 	 * @ORM\Column(type="float");
@@ -104,14 +104,14 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 
 	/**
      * @ORM\ManyToOne(targetEntity="User")
-	 * @ORM\JoinColumn(name="assigned_by_id", referencedColumnName="user_id")
+	 * @ORM\JoinColumn(name="assignedBy_id", referencedColumnName="user_id")
 	 */
-	protected $assigned_by;
+	protected $assignedBy;
 
 	/**
 	 * @ORM\Column(type="datetime");
 	 */
-	protected $assigned_at;
+	protected $assignedAt;
  
 	/**
 	 * @ORM\Column(type="text");
@@ -121,7 +121,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	/**
 	 * @ORM\Column(type="text");
 	 */
-	protected $title_thumbnail;
+	protected $titleThumbnail;
  
 	/**
 	 * @ORM\Column(type="text");
@@ -131,7 +131,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	/**
 	 * @ORM\Column(type="text");
 	 */
-	protected $webvtt_file;
+	protected $webvttFile;
  
 	/**
 	 * Getter for ID
@@ -149,13 +149,13 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	 * Getter for SourceUser
 	 * @return User
 	 */
-	public function getSourceUser(){ return $this->source_user; }
+	public function getSourceUser(){ return $this->sourceUser; }
 
 	/**
 	 * Getter for LengthSeconds
 	 * @return int
 	 */
-	public function getLengthSeconds(){ return $this->length_seconds; }
+	public function getLengthSeconds(){ return $this->lengthSeconds; }
 
 	/**
 	 * Getter for Height
@@ -173,7 +173,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	 * Getter for AspectRatio
 	 * @return float
 	 */
-	public function getAspectRatio(){ return $this->aspect_ratio; }
+	public function getAspectRatio(){ return $this->aspectRatio; }
 
 	/**
 	 * Getter for Framerate
@@ -209,13 +209,13 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	 * Getter for AssignedBy
 	 * @return User
 	 */
-	public function getAssignedBy(){ return $this->assigned_by; }
+	public function getAssignedBy(){ return $this->assignedBy; }
 
 	/**
 	 * Getter for AssignedAt
 	 * @return DateTime
 	 */
-	public function getAssignedAt(){ return $this->assigned_at; }
+	public function getAssignedAt(){ return $this->assignedAt; }
 
 	/**
 	 * Getter for Filename
@@ -227,7 +227,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	 * Getter for TitleThumbnail
 	 * @return string
 	 */
-	public function getTitleThumbnail(){ return $this->title_thumbnail; }
+	public function getTitleThumbnail(){ return $this->titleThumbnail; }
 
 	/**
 	 * Getter for MosaicFile
@@ -239,7 +239,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	 * Getter for WebVTTFile
 	 * @return string
 	 */
-	public function getWebVTTFile(){ return $this->webvtt_file; }
+	public function getWebVTTFile(){ return $this->webvttFile; }
 	
 	
 	
@@ -260,15 +260,15 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	
 	/** 
 	 * Setter for SourceUser
-	 * @param User $source_user
+	 * @param User $sourceUser
 	 */
-	public function setSourceUser($source_user){ $this->source_user = $source_user; }
+	public function setSourceUser($sourceUser){ $this->sourceUser = $sourceUser; }
 	
 	/** 
 	 * Setter for LengthSeconds
-	 * @param float $length_seconds
+	 * @param float $lengthSeconds
 	 */
-	public function setLengthSeconds($length_seconds){ $this->length_seconds = $length_seconds; }
+	public function setLengthSeconds($lengthSeconds){ $this->lengthSeconds = $lengthSeconds; }
 	
 	/** 
 	 * Setter for Height
@@ -284,9 +284,9 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	
 	/** 
 	 * Setter for AspectRatio
-	 * @param float $aspect_ratio
+	 * @param float $aspectRatio
 	 */
-	public function setAspectRatio($aspect_ratio){ $this->aspect_ratio = $aspect_ratio; }
+	public function setAspectRatio($aspectRatio){ $this->aspectRatio = $aspectRatio; }
 	
 	/** 
 	 * Setter for Framerate
@@ -320,15 +320,15 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	
 	/** 
 	 * Setter for AssignedBy
-	 * @param User $assigned_by
+	 * @param User $assignedBy
 	 */
-	public function setAssignedBy($assigned_by){ $this->assigned_by = $assigned_by; }
+	public function setAssignedBy($assignedBy){ $this->assignedBy = $assignedBy; }
 	
 	/** 
 	 * Setter for AssignedAt
-	 * @param DateTime $assigned_at
+	 * @param DateTime $assignedAt
 	 */
-	public function setAssignedAt($assigned_at){ $this->assigned_at = $assigned_at; }
+	public function setAssignedAt($assignedAt){ $this->assignedAt = $assignedAt; }
 	
 	/** 
 	 * Setter for Filename
@@ -338,9 +338,9 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	
 	/** 
 	 * Setter for TitleThumbnail
-	 * @param string $title_thumbnail
+	 * @param string $titleThumbnail
 	 */
-	public function setTitleThumbnail($title_thumbnail){ $this->title_thumbnail = $title_thumbnail; }
+	public function setTitleThumbnail($titleThumbnail){ $this->titleThumbnail = $titleThumbnail; }
 	
 	/** 
 	 * Setter for MosaicFile
@@ -350,9 +350,9 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 	
 	/** 
 	 * Setter for WebVTTFile
-	 * @param string $webvtt_file
+	 * @param string $webvttFile
 	 */
-	public function setWebVTTFile($webvtt_file){ $this->webvtt_file = $webvtt_file; }
+	public function setWebVTTFile($webvttFile){ $this->webvttFile = $webvttFile; }
 	
 	/**
 	 * Populate from an array.
@@ -363,22 +363,22 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 		if(!empty($data['id']))
 			$this->setId($data['id']);
 		$this->setId($data['event']);
-		$this->setSourceUser($data['source_user']);
-		$this->setLengthSeconds($data['length_seconds']);
+		$this->setSourceUser($data['sourceUser']);
+		$this->setLengthSeconds($data['lengthSeconds']);
 		$this->setHeight($data['height']);
 		$this->setWidth($data['width']);
-		$this->setAspectRatio($data['aspect_ratio']);
+		$this->setAspectRatio($data['aspectRatio']);
 		$this->setFramerate($data['framerate']);
 		$this->setCodecs($data['codecs']);
 		$this->setQuality($data['quality']);
 		$this->setSpeed($data['speed']);
 		$this->setHash($data['hash']);
-		$this->setAssignedBy($data['assigned_by']);
-		$this->setAssignedAt($data['assigned_at']);
+		$this->setAssignedBy($data['assignedBy']);
+		$this->setAssignedAt($data['assignedAt']);
 		$this->setFilename($data['filename']);
-		$this->setTitleThumbnail($data['title_thumbnail']);
-		$this->setMosaicFile($data['modaic_file']);
-		$this->setWebVTTFile($data['webvtt_file']);
+		$this->setTitleThumbnail($data['titleThumbnail']);
+		$this->setMosaicFile($data['modaicFile']);
+		$this->setWebVTTFile($data['webvttFile']);
 	}
  
 	public function getArrayCopy(){
@@ -408,7 +408,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'length_seconds',
+				'name'       => 'lengthSeconds',
 				'required'   => true,
 				'validators' => array(
 					array('name'    => 'Float'),
@@ -432,7 +432,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'aspect_ratio',
+				'name'       => 'aspectRatio',
 				'required'   => true,
 				'validators' => array(
 					array('name'    => 'Float'),
@@ -483,7 +483,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'title_thumbnail',
+				'name'       => 'titleThumbnail',
 				'required'   => true,
 				'filters' => array(
 					array('name' => 'StripTags'),
@@ -492,7 +492,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'modaic_file',
+				'name'       => 'modaicFile',
 				'required'   => true,
 				'filters' => array(
 					array('name' => 'StripTags'),
@@ -501,7 +501,7 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 			)));
 
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'webvtt_file',
+				'name'       => 'webvttFile',
 				'required'   => true,
 				'filters' => array(
 					array('name' => 'StripTags'),
@@ -532,22 +532,22 @@ class Video implements InputFilterAwareInterface, JsonSerializable
 		$data = array(
 			"id" => $this->getId(),
 			"event" => $this->getEvent(),
-			"source_user" => $this->getSourceUser(),
-			"length_seconds" => $this->getLengthSeconds(),
+			"sourceUser" => $this->getSourceUser(),
+			"lengthSeconds" => $this->getLengthSeconds(),
 			"height" => $this->getHeight(),
 			"width" => $this->getWidth(),
-			"aspect_ratio" => $this->getAspectRatio(),
+			"aspectRatio" => $this->getAspectRatio(),
 			"framerate" => $this->getFramerate(),
 			"codecs" => $this->getCodecs(),
 			"quality" => $this->getQuality(),
 			"speed" => $this->getSpeed(),
 			"hash" => $this->getHash(),
-			"assigned_by" => $this->getAssignedBy(),
-			"assigned_at" => $this->getAssignedAt(),
+			"assignedBy" => $this->getAssignedBy(),
+			"assignedAt" => $this->getAssignedAt(),
 			"filename" => $this->getFilename(),
-			"title_thumbnail" => $this->getTitleThumbnail(),
-			"modaic_file" => $this->getMosaicFile(),
-			"webvtt_file" => $this->getWebVTTFile(),
+			"titleThumbnail" => $this->getTitleThumbnail(),
+			"modaicFile" => $this->getMosaicFile(),
+			"webvttFile" => $this->getWebVTTFile(),
 		);
 		return $data;
 	}

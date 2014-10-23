@@ -16,7 +16,7 @@ use JsonSerializable;
  * @ORM\Table(name="series_event_association")
  * @property Series $series
  * @property Event $event
- * @property int $custom_order
+ * @property int $customOrder
  */
 class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializable
 {
@@ -24,14 +24,14 @@ class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializa
  	
 	/**
 	 * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Series", inversedBy="events_associations")
+     * @ORM\ManyToOne(targetEntity="Series", inversedBy="eventAssociations")
 	 * @ORM\JoinColumn(name="series_id", referencedColumnName="id")
 	 */
 	protected $series;
  	
 	/**
 	 * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Event", inversedBy="series_associations")
+     * @ORM\ManyToOne(targetEntity="Event", inversedBy="seriesAssociations")
 	 * @ORM\JoinColumn(name="event_id", referencedColumnName="id")
 	 */
 	protected $event;
@@ -39,7 +39,7 @@ class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializa
 	/**
 	 * @ORM\Column(type="integer");
 	 */
-	protected $custom_order;
+	protected $customOrder;
 	
 
 	/**
@@ -58,7 +58,7 @@ class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializa
 	 * Getter for CustomOrder
 	 * @return int
 	 */
-	public function getCustomOrder(){ return $this->custom_order; }
+	public function getCustomOrder(){ return $this->customOrder; }
 	
 	/** 
 	 * Setter for Event
@@ -74,9 +74,9 @@ class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializa
 	
 	/** 
 	 * Setter for CustomOrder
-	 * @param int $custom_order
+	 * @param int $customOrder
 	 */
-	public function setCustomOrder($custom_order){ $this->custom_order = $custom_order; }
+	public function setCustomOrder($customOrder){ $this->customOrder = $customOrder; }
 	
 	/**
 	 * Populate from an array.
@@ -86,7 +86,7 @@ class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializa
 	public function populate($data = array()){
 		$this->setEvent($data['event']);
 		$this->setSeries($data['series']);
-		$this->setCustomOrder($data['custom_order']);
+		$this->setCustomOrder($data['customOrder']);
 	}
  
 	public function getArrayCopy(){
@@ -108,7 +108,7 @@ class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializa
 			$factory = new InputFactory();
  
 			$inputFilter->add($factory->createInput(array(
-				'name'       => 'custom_order',
+				'name'       => 'customOrder',
 				'required'   => true,
 				'filters' => array(
 					array('name'    => 'Int'),
@@ -138,7 +138,7 @@ class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializa
 		$data = array(
 			"event" => $this->getEvent(),
 			"series" => $this->getSeries(),
-			"custom_order" => $this->getCustomOrder()
+			"customOrder" => $this->getCustomOrder()
 		);
 		return $data;
 	}

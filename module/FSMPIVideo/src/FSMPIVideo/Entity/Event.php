@@ -96,7 +96,7 @@ class Event extends ListedItem
 	 * Setter for Date
 	 * @param DateTime $date
 	 */
-	public function setDate(DateTime $date){ $this->date = $date; }
+	public function setDate(\DateTime $date){ $this->date = $date; }
 	
 	/** 
 	 * Setter for Place

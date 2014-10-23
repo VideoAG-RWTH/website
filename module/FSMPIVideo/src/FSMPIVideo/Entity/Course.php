@@ -189,7 +189,11 @@ class Course implements InputFilterAwareInterface, JsonSerializable
 
 		return $this->inputFilter;
 	}
-
+	
+	public function __toString(){
+		return $this->getAbbreviation() . " (" . $this->getTitle() . ")";
+	}
+	
 	/**
 	 * Returns json String
 	 * @return string

@@ -28,6 +28,7 @@
 		"bootflat" : "*",
 		"Selecter" : "*",
 		"Stepper" : "*",
-		"iCheck" : "*"
+		"iCheck" : "*",
+		"bootstrap-switch" : "*"
 	}
 }

@@ -15,6 +15,7 @@
 				->prependStylesheet($this->basePath() . '/css/style.css')
 				->prependStylesheet($this->basePath() . '/css/jquery.fs.selecter.css')
 				->prependStylesheet($this->basePath() . '/css/jquery.fs.stepper.css')
+				->prependStylesheet($this->basePath() . '/css/bootstrap-switch.css')
 				->prependStylesheet($this->basePath() . '/css/bootstrap-theme.min.css')
 				->prependStylesheet($this->basePath() . '/css/bootstrap.min.css') ?>
 		
@@ -25,6 +26,7 @@
 		<script type="text/javascript">
 			$(function(){
 				$('select').selecter();
+				$('input[type=checkbox].toggle_switch').bootstrapSwitch();
 			})
 		</script>
 	</head>

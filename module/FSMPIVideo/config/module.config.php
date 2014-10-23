@@ -78,6 +78,75 @@ function create_child_route($controller){
     );	
 }
 
+$seriesRoute = create_child_route('series');
+$seriesRoute['child_routes']['events'] = array(
+    'type' => 'Segment',
+    'options' => array(
+        'route' => '/events/:id',
+        'defaults' => array(
+            'controller' => 'series',
+            'action'     => 'index',
+			'id'         => 0
+        ),
+		'constraints' => array(
+			'id'    => '[0-9]+',
+		),
+    ),
+    'child_routes' => array(
+		'list' => array(
+			'type' => 'Segment',
+			'options' => array(
+				'route' => '/list[/:p]',
+				'defaults' => array(
+					'controller' => 'series',
+					'action'     => 'events',
+				),
+				'constraints' => array(
+					'p'         => '[0-9]*',
+				),
+			),
+		),
+		'create' => array(
+			'type' => 'Literal',
+			'options' => array(
+				'route' => '/create',
+				'defaults' => array(
+					'controller' => 'series',
+					'action'     => 'createEvent'
+				),
+			),
+		),
+		'edit' => array(
+			'type' => 'Segment',
+			'options' => array(
+				'route' => '/edit/:eventId',
+				'defaults' => array(
+					'controller' => 'series',
+					'action'     => 'editEvent',
+					'eventId'    => 0
+				),
+				'constraints' => array(
+					'eventId'    => '[0-9]+',
+				),
+			),
+		),
+		'delete' => array(
+			'type' => 'Segment',
+			'options' => array(
+				'route' => '/delete/:eventId',
+				'defaults' => array(
+					'controller' => 'series',
+					'action'     => 'deleteEvent',
+					'eventId'    => 0
+				),
+				'constraints' => array(
+					'eventId'    => '[0-9]+',
+				),
+			),
+		),
+	),
+);
+
 return array(
 	'controllers' => array(
 		'invokables' => array(
@@ -88,6 +157,9 @@ return array(
 			'lecturer' => 'FSMPIVideo\Controller\LecturerController',
 			'videoquality' => 'FSMPIVideo\Controller\VideoQualityController',
 			'suggestedtitle' => 'FSMPIVideo\Controller\SuggestedTitleController',
+			'listeditem' => 'FSMPIVideo\Controller\ListedItemController',
+			'series' => 'FSMPIVideo\Controller\SeriesController',
+			'event' => 'FSMPIVideo\Controller\EventController',
 		),
 	),
 	
@@ -111,6 +183,9 @@ return array(
 	                'lecturer' => create_child_route('lecturer'),
 	                'videoquality' => create_child_route('videoquality'),
 	                'suggestedtitle' => create_child_route('suggestedtitle'),
+	                'listeditem' => create_child_route('listeditem'),
+	                'series' => $seriesRoute,
+	                'event' => create_child_route('event'),
 				),
 			),
 		),
@@ -170,6 +245,8 @@ return array(
 			'lecturer' => create_admin_navigation('Lecturer', 'lecturer'),
 			'videoquality' => create_admin_navigation('VideoQuality', 'videoquality'),
 			'suggestedtitle' => create_admin_navigation('SuggestedTitle', 'suggestedtitle'),
+			'series' => create_admin_navigation('Series', 'series'),
+			'event' => create_admin_navigation('Events', 'event'),
 		),
 	),
 

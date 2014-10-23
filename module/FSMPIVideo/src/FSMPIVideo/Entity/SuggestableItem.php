@@ -17,8 +17,8 @@ use JsonSerializable;
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\Table(name="suggestable_item")
  * @property int $id
- * @property DateTime $suggested_at
- * @property User $suggested_by
+ * @property DateTime $suggestedAt
+ * @property User $suggestedBy
  */
 class SuggestableItem implements InputFilterAwareInterface, JsonSerializable
 {
@@ -34,13 +34,13 @@ class SuggestableItem implements InputFilterAwareInterface, JsonSerializable
 	/**
 	 * @ORM\Column(type="datetime");
 	 */
-	protected $suggested_at;
+	protected $suggestedAt;
 	
 	/**
      * @ORM\ManyToOne(targetEntity="User")
-	 * @ORM\JoinColumn(name="suggested_by_id", referencedColumnName="user_id")
+	 * @ORM\JoinColumn(name="suggestedBy_id", referencedColumnName="user_id")
 	 */
-	protected $suggested_by;
+	protected $suggestedBy;
  
 	/**
 	 * Getter for Id
@@ -52,13 +52,13 @@ class SuggestableItem implements InputFilterAwareInterface, JsonSerializable
 	 * Getter for SuggestedAt
 	 * @return DateTime
 	 */
-	public function getSuggestedAt(){ return $this->suggested_at; }
+	public function getSuggestedAt(){ return $this->suggestedAt; }
 
 	/**
 	 * Getter for SuggestedBy
 	 * @return User
 	 */
-	public function getSuggestedBy(){ return $this->suggested_by; }
+	public function getSuggestedBy(){ return $this->suggestedBy; }
 	
 	/** 
 	 * Setter for ID
@@ -68,15 +68,15 @@ class SuggestableItem implements InputFilterAwareInterface, JsonSerializable
 	
 	/** 
 	 * Setter for SuggestedAt
-	 * @param DateTime $suggested_at
+	 * @param DateTime $suggestedAt
 	 */
-	public function setSuggestedAt($suggested_at){ $this->suggested_at = $suggested_at; }
+	public function setSuggestedAt($suggestedAt){ $this->suggestedAt = $suggestedAt; }
 	
 	/** 
 	 * Setter for SuggestedBy
-	 * @param User $suggested_by
+	 * @param User $suggestedBy
 	 */
-	public function setSuggestedBy($suggested_by){ $this->suggested_by = $suggested_by; }
+	public function setSuggestedBy($suggestedBy){ $this->suggestedBy = $suggestedBy; }
 	
 	/**
 	 * Populate from an array.
@@ -86,8 +86,8 @@ class SuggestableItem implements InputFilterAwareInterface, JsonSerializable
 	public function populate($data = array()){
 		if(!empty($data['id']))
 			$this->setId($data['id']);
-		$this->setSuggestedAt($data['suggested_at']);
-		$this->setSuggestedBy($data['suggested_by']);
+		$this->setSuggestedAt($data['suggestedAt']);
+		$this->setSuggestedBy($data['suggestedBy']);
 	}
  
 	public function getArrayCopy(){
@@ -138,8 +138,8 @@ class SuggestableItem implements InputFilterAwareInterface, JsonSerializable
 	public function jsonSerialize(){
 		$data = array(
 			"id" => $this->getId(),
-			"suggested_at" => $this->getSuggestedAt(),
-			"suggested_by" => $this->getSuggestedBy()
+			"suggestedAt" => $this->getSuggestedAt(),
+			"suggestedBy" => $this->getSuggestedBy()
 		);
 		return $data;
 	}

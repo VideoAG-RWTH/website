@@ -17,9 +17,9 @@ use FSMPIVideo\Entity\SuggestableItem;
  * @ORM\Entity
  * @ORM\Table(name="suggested_title")
  * @property string $title
- * @property ListedItem $listed_item
- * @property boolean $is_viewed
- * @property User $viewed_by
+ * @property ListedItem $listedItem
+ * @property boolean $isViewed
+ * @property User $viewedBy
  */
 class SuggestedTitle extends SuggestableItem
 {
@@ -32,20 +32,20 @@ class SuggestedTitle extends SuggestableItem
  	
 	/**
      * @ORM\ManyToOne(targetEntity="ListedItem")
-	 * @ORM\JoinColumn(name="listed_item_id", referencedColumnName="id")
+	 * @ORM\JoinColumn(name="listedItem_id", referencedColumnName="id")
 	 */
-	protected $listed_item;
+	protected $listedItem;
 	
 	/**
 	 * @ORM\Column(type="boolean");
 	 */
-	protected $is_viewed;
+	protected $isViewed;
 	
 	/**
      * @ORM\ManyToOne(targetEntity="User")
-	 * @ORM\JoinColumn(name="viewed_by_id", referencedColumnName="user_id")
+	 * @ORM\JoinColumn(name="viewedBy_id", referencedColumnName="user_id")
 	 */
-	protected $viewed_by;
+	protected $viewedBy;
 
 	/**
 	 * Getter for Title
@@ -57,19 +57,19 @@ class SuggestedTitle extends SuggestableItem
 	 * Getter for ListedItem
 	 * @return ListedItem
 	 */
-	public function getListedItem(){ return $this->listed_item; }
+	public function getListedItem(){ return $this->listedItem; }
 
 	/**
 	 * Getter for IsViewed
 	 * @return boolean
 	 */
-	public function getIsViewed(){ return $this->is_viewed; }
+	public function getIsViewed(){ return $this->isViewed; }
 
 	/**
 	 * Getter for ViewedBy
 	 * @return User
 	 */
-	public function getViewedBy(){ return $this->viewed_by; }
+	public function getViewedBy(){ return $this->viewedBy; }
 	
 	/** 
 	 * Setter for Title
@@ -79,21 +79,21 @@ class SuggestedTitle extends SuggestableItem
 	
 	/** 
 	 * Setter for ListedItem
-	 * @param ListedItem $listed_item
+	 * @param ListedItem $listedItem
 	 */
-	public function setListedItem($listed_item){ $this->listed_item = $listed_item; }
+	public function setListedItem($listedItem){ $this->listedItem = $listedItem; }
 	
 	/** 
 	 * Setter for IsViewed
-	 * @param boolean $is_viewed
+	 * @param boolean $isViewed
 	 */
-	public function setIsViewed($is_viewed){ $this->is_viewed = $is_viewed; }
+	public function setIsViewed($isViewed){ $this->isViewed = $isViewed; }
 	
 	/** 
 	 * Setter for ViewedBy
-	 * @param User $viewed_by
+	 * @param User $viewedBy
 	 */
-	public function setViewedBy($viewed_by){ $this->viewed_by = $viewed_by; }
+	public function setViewedBy($viewedBy){ $this->viewedBy = $viewedBy; }
 	
 	/**
 	 * Populate from an array.
@@ -103,9 +103,9 @@ class SuggestedTitle extends SuggestableItem
 	public function populate($data = array()){
 		parent::populate($data);
 		$this->setTitle($data['title']);
-		$this->setListedItem($data['listed_item']);
-		$this->setIsViewed($data['is_viewed']);
-		$this->setViewedBy($data['viewed_by']);
+		$this->setListedItem($data['listedItem']);
+		$this->setIsViewed($data['isViewed']);
+		$this->setViewedBy($data['viewedBy']);
 	}
  
 	public function setInputFilter(InputFilterInterface $inputFilter){
@@ -144,10 +144,10 @@ class SuggestedTitle extends SuggestableItem
 	 */
 	public function jsonSerialize(){
 		$data = array(
-			"listed_item" => $this->getListedItem(),
+			"listedItem" => $this->getListedItem(),
 			"title" => $this->getTitle(),
-			"is_viewed" => $this->getIsViewed(),
-			"viewed_by" => $this->getViewedBy()
+			"isViewed" => $this->getIsViewed(),
+			"viewedBy" => $this->getViewedBy()
 		);
 		return array_merge(parent::jsonSerialize(), $data);
 	}

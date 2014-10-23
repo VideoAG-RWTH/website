@@ -16,9 +16,9 @@ use FSMPIVideo\Entity\ListedItem;
  *
  * @ORM\Entity
  * @ORM\Table(name="series")
- * @property string $link_elearning
- * @property string $link_campus
- * @property string $link_series
+ * @property string $linkElearning
+ * @property string $linkCampus
+ * @property string $linkSeries
  * @property CourseHost $host
  * @property Lecturer $lecturer
  * @property Course $course
@@ -30,17 +30,17 @@ class Series extends ListedItem
 	/**
 	 * @ORM\Column(type="text");
 	 */
-	protected $link_elearning;
+	protected $linkElearning;
  	
 	/**
 	 * @ORM\Column(type="text");
 	 */
-	protected $link_campus;
+	protected $linkCampus;
  	
 	/**
 	 * @ORM\Column(type="text");
 	 */
-	protected $link_series;
+	protected $linkSeries;
  	
 	/**
      * @ORM\ManyToOne(targetEntity="CourseHost")
@@ -62,26 +62,27 @@ class Series extends ListedItem
 	
 	/**
      * @ORM\OneToMany(targetEntity="SeriesEventAssociation",mappedBy="series")
+	 * @ORM\OrderBy({"customOrder" = "ASC"})
 	 */
-	protected $events_associations;
+	protected $eventAssociations;
  
 	/**
 	 * Getter for ELearning Link
 	 * @return string
 	 */
-	public function getLinkELearning(){ return $this->link_elearning; }
+	public function getLinkELearning(){ return $this->linkElearning; }
 
 	/**
 	 * Getter for Campus Link
 	 * @return string
 	 */
-	public function getLinkCampus(){ return $this->link_campus; }
+	public function getLinkCampus(){ return $this->linkCampus; }
 
 	/**
 	 * Getter for Series Link
 	 * @return string
 	 */
-	public function getLinkSeries(){ return $this->link_series; }
+	public function getLinkSeries(){ return $this->linkSeries; }
 
 	/**
 	 * Getter for Host
@@ -105,7 +106,7 @@ class Series extends ListedItem
 	 * Getter for Event Associations
 	 * @return array
 	 */
-	public function getEventAssociations(){ return $this->event_associations; }
+	public function getEventAssociations(){ return $this->eventAssociations; }
 
 
 	
@@ -113,19 +114,25 @@ class Series extends ListedItem
 	 * Setter for ELearning Link
 	 * @param string $link
 	 */
-	public function setLinkELearning($link){ $this->link_elearning = $link; }
+	public function setLinkELearning($link){ $this->linkElearning = $link; }
 	
 	/**
 	 * Setter for Campus Link
-	 * @param string $link_campus
+	 * @param string $linkCampus
 	 */
-	public function setLinkCampus($link_campus){ $this->link_campus = $link_campus; }
+	public function setLinkCampus($linkCampus){ $this->linkCampus = $linkCampus; }
 
 	/**
 	 * Setter for Series Link
-	 * @param string $link_series
+	 * @param string $linkSeries
 	 */
-	public function setLinkSeries($link_series){ $this->link_series = $link_series; }
+	public function setLinkSeries($linkSeries){ $this->linkSeries = $linkSeries; }
+
+	/**
+	 * Setter for Course
+	 * @param CourseHost $course
+	 */
+	public function setCourse($course){ $this->course = $course; }
 
 	/**
 	 * Setter for Host
@@ -154,9 +161,9 @@ class Series extends ListedItem
 	 */
 	public function populate($data = array()){
 		parent::populate($data);
-		$this->setLinkELearning($data['link_elearning']);
-		$this->setLinkCampus($data['link_campus']);
-		$this->setLinkSeries($data['link_series']);
+		$this->setLinkELearning($data['linkElearning']);
+		$this->setLinkCampus($data['linkCampus']);
+		$this->setLinkSeries($data['linkSeries']);
 		$this->setHost($data['host']);
 		$this->setLecturer($data['lecturer']);
 		$this->setCourse($data['course']);
@@ -177,7 +184,7 @@ class Series extends ListedItem
 			$factory = new InputFactory();
  
 	        $inputFilter->add($factory->createInput(array(
-	            'name'     => 'link_elearning',
+	            'name'     => 'linkElearning',
 	            'required' => false,
 	            'filters'  => array(
 	                array('name' => 'StripTags'),
@@ -186,7 +193,7 @@ class Series extends ListedItem
 	        )));
 
 	        $inputFilter->add($factory->createInput(array(
-	            'name'     => 'link_campus',
+	            'name'     => 'linkCampus',
 	            'required' => false,
 	            'filters'  => array(
 	                array('name' => 'StripTags'),
@@ -195,12 +202,22 @@ class Series extends ListedItem
 	        )));
 
 		    $inputFilter->add($factory->createInput(array(
-		        'name'     => 'link_series',
+		        'name'     => 'linkSeries',
 		        'required' => false,
 		        'filters'  => array(
 		            array('name' => 'StripTags'),
 		            array('name' => 'StringTrim'),
 		        ),
+		    )));
+
+		    $inputFilter->add($factory->createInput(array(
+		        'name'     => 'lecturer',
+		        'required' => false,
+		    )));
+
+		    $inputFilter->add($factory->createInput(array(
+		        'name'     => 'host',
+		        'required' => false,
 		    )));
 
 			$this->inputFilter = $inputFilter;        
@@ -215,13 +232,13 @@ class Series extends ListedItem
 	 */
 	public function jsonSerialize(){
 		$data = array(
-			"link_elearning" => $this->getLinkELearning(),
-			"link_campus" => $this->getLinkCampus(),
-			"link_series" => $this->getLinkSeries(),
+			"linkElearning" => $this->getLinkELearning(),
+			"linkCampus" => $this->getLinkCampus(),
+			"linkSeries" => $this->getLinkSeries(),
 			"host" => $this->getHost(),
 			"lecturer" => $this->getLecturer(),
 			"course" => $this->getCourse(),
-			"event_associations" => $this->getEventAssociations(),
+			"eventAssociations" => $this->getEventAssociations(),
 		);
 		return array_merge(parent::jsonSerialize(), $data);
 	}

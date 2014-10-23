@@ -21,7 +21,8 @@ return array(
 					'bootstrap',
 					"Selecter",
 					"Stepper",
-					"iCheck"
+					"iCheck",
+					"bootstrap-switch"
 				)
 			),
 			'ieLT9' => array(
