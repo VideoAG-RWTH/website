@@ -31,7 +31,7 @@ class SuggestedTitle extends SuggestableItem
 	protected $title;
  	
 	/**
-     * @ORM\ManyToOne(targetEntity="ListedItem")
+     * @ORM\ManyToOne(targetEntity="ListedItem", inversedBy="suggestedTitles")
 	 * @ORM\JoinColumn(name="listedItem_id", referencedColumnName="id")
 	 */
 	protected $listedItem;

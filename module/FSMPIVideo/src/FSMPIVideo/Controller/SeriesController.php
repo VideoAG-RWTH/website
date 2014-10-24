@@ -4,7 +4,7 @@ namespace FSMPIVideo\Controller;
 use FSMPIVideo\Entity\Event;
 use FSMPIVideo\Entity\SeriesEventAssociation;
 
-class SeriesController extends ListController
+class SeriesController extends ListedItemController
 {
 	public function __construct(){
 		$params = array(
@@ -66,7 +66,8 @@ class SeriesController extends ListController
 			'delete_param_name' => $this->params['subdelete_param_name'],
 			'parent_list_route' => $this->params['list_route'],
 			'parent_param_name' => $this->params['sublist_parent_param_name'],
-			'parent_id' => $series->getId()
+			'parent_id' => $series->getId(),
+			'parent_alias' => $series->getAlias(),
 		);
 		return $this->_showList($params);
 	}
@@ -116,6 +117,7 @@ class SeriesController extends ListController
 			'create_route' => $this->params['subcreate_route'],
 			'parent_param_name' => $this->params['sublist_parent_param_name'],
 			'parent_id' => $series->getId(),
+			'parent_alias' => $series->getAlias(),
 			'form' => $form,
 		);
 		return $this->_showCreateForm($params);
@@ -149,6 +151,7 @@ class SeriesController extends ListController
 			'delete_warning_text' => $this->params['subdelete_warning_text'],
 			'parent_param_name' => $this->params['sublist_parent_param_name'],
 			'parent_id' => $series->getId(),
+			'parent_alias' => $series->getAlias(),
             'form' => $form,
             'id' => $id
 		);

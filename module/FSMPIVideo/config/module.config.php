@@ -120,6 +120,63 @@ return array(
 	                'suggestedtitle' => create_child_route('suggestedtitle'),
 	                'listeditem' => create_child_route('listeditem'),
 	                'series' => create_child_route('series', array(
+						'titles' => array(
+							'type' => 'Segment',
+							'options' => array(
+						        'route' => '/titles/:id[-:alias]',
+						        'defaults' => array(
+						            'controller' => 'series',
+						            'action'     => 'index',
+									'id'         => 0,
+									'alias'      => ''
+						        ),
+								'constraints' => array(
+									'id'    => '[0-9]+',
+									'alias'    => '[a-zA-Z0-9_-]*',
+								),
+							),
+							'child_routes' => array(
+								'list' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/list[/:p]',
+										'defaults' => array(
+											'controller' => 'series',
+											'action'     => 'titles',
+										),
+										'constraints' => array(
+											'p'         => '[0-9]*',
+										),
+									),
+								),
+								'accept' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/accept/:titleId',
+										'defaults' => array(
+											'controller' => 'series',
+											'action'     => 'acceptTitle',
+										),
+										'constraints' => array(
+											'titleId'         => '[0-9]+',
+										),
+									),
+								),
+								'decline' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/decline/:titleId',
+										'defaults' => array(
+											'controller' => 'series',
+											'action'     => 'declineTitle',
+										),
+										'constraints' => array(
+											'titleId'         => '[0-9]+',
+										),
+									),
+								),
+						    ),
+						),
 						'events' => array(
 						    'type' => 'Segment',
 						    'options' => array(

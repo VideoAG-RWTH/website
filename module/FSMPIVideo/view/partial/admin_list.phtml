@@ -65,9 +65,11 @@ if(!empty($this->parent_list_route))
 <div class="navbar filter-bar">
     <div class="navbar-inner">
         <div class="pull-right">
-            <a href="<?php echo $this->url($this->create_route, $isSublist ? array($this->parent_param_name => $this->parent_id) : array()) ?>" class="btn btn-primary">
-                <?php echo $this->translate($this->create_text) ?>
-            </a>
+			<?php if(!empty($this->create_route)) : ?>
+	            <a href="<?php echo $this->url($this->create_route, $isSublist ? array($this->parent_param_name => $this->parent_id) : array()) ?>" class="btn btn-primary">
+	                <?php echo $this->translate($this->create_text) ?>
+	            </a>
+			<?php endif; ?>
         </div>
     </div>
 </div>
@@ -95,26 +97,67 @@ if(!empty($this->parent_list_route))
                 </td>
             <?php endforeach; ?>
             <td class="cell cell-ctrls">
-				<?php if(!empty($this->sublist_route)): ?>
-					<?php 
+				<?php
+					$buttons = array();
+					if(!empty($this->row_buttons))
+						foreach($this->row_buttons as $button){
+							$routeParams = $isSublist ? array($this->parent_param_name => $this->parent_id) : array();
+							$routeParams[$button['param_name']] = call_user_func(array($row, $idGetter));
+							
+							if($isSublist && !empty($this->parent_alias))
+								$routeParams = array('alias' => $this->parent_alias) + $routeParams;
+							
+							$buttons[] = array(
+								'title' => $button['title'],
+								'route' => $button['route'],
+								'params' => $routeParams
+							);
+						}
+					
+					if(!empty($this->sublist_route)){
 						$routeParams = array($this->parent_param_name => call_user_func(array($row, $idGetter)) );
 						if(method_exists($row, 'getAlias'))
 							$routeParams = array('alias' => $row->getAlias()) + $routeParams;
-					?>
-	                <a href="<?php echo $this->url($this->sublist_route, $routeParams); ?>">
-	                    <?php echo $this->translate($this->sublist_link_name) ?>
-	                </a>
-	                |
-				<?php endif;?>
-				<?php $routeParams = $isSublist ? array($this->parent_param_name => $this->parent_id) : array(); ?>
-                <a href="<?php echo $this->url($this->edit_route, array_merge($routeParams, array($this->edit_param_name => call_user_func(array($row, $idGetter)) )) ); ?>">
-                    <?php echo $this->translate('Edit') ?>
-                </a>
-                |
-                <a href="<?php echo $this->url($this->delete_route, array_merge($routeParams, array($this->delete_param_name => call_user_func(array($row, $idGetter)) )) ); ?>"
-                   onclick="return confirm('<?php echo $this->translate($this->delete_warning_text) ?>')">
-                    <?php echo $this->translate('Delete') ?>
-                </a>
+						
+						$buttons[] = array(
+							'title' => $this->sublist_link_name,
+							'route' => $this->sublist_route,
+							'params' => $routeParams
+						);
+					}
+					
+					if(!empty($this->edit_route)){
+						$routeParams = $isSublist ? array($this->parent_param_name => $this->parent_id) : array();
+						$routeParams[$this->edit_param_name] = call_user_func(array($row, $idGetter));
+						if($isSublist && !empty($this->parent_alias))
+							$routeParams = array('alias' => $this->parent_alias) + $routeParams;
+						
+						$buttons[] = array(
+							'title' => "Edit",
+							'route' => $this->edit_route,
+							'params' => $routeParams
+						);
+					}
+
+					if(!empty($this->delete_route)){
+						$routeParams = $isSublist ? array($this->parent_param_name => $this->parent_id) : array();
+						$routeParams[$this->delete_param_name] = call_user_func(array($row, $idGetter));
+						$buttons[] = array(
+							'title' => "Delete",
+							'route' => $this->delete_route,
+							'params' => $routeParams,
+							'warning' => $this->delete_warning_text
+						);
+					}
+				?>
+				<?php $c = 0;?>
+				<?php foreach($buttons as $button): ?>
+					<?= $c == 0 ? '' : '|'  ?>
+					<a href="<?php echo $this->url($button['route'], $button['params']); ?>" <?= empty($button['warning']) ? '' : 'onclick=" return confirm(\''.$button['warning'].'\')"' ?> >
+						<?php echo $this->translate($button['title']) ?>
+					</a>
+					<?php $c++; ?>
+				<?php endforeach; ?>
             </td>
         </tr>
     <?php endforeach; ?>

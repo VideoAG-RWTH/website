@@ -220,6 +220,7 @@ abstract class ListController extends AbstractActionController
 	}
 	
 	protected function _editItem($item, $form){
+		$em = $this->getEntityManager();
 		$form->setBindOnValidate(false);
 		$form->bind($item);
 		
@@ -249,18 +250,16 @@ abstract class ListController extends AbstractActionController
 		if(!$id)
 			return $this->_redirectToList();
 		
-		$em = $this->getEntityManager();
 		$item = $this->getItem($id);
 		
 		if($this->_delteItem($item)){
-			$em->remove($item);
-			$em->flush();
 	        $this->flashMessenger()->addSuccessMessage('The '.$this->getName().' was deleted');
 		}
 		return $this->_redirectToList();
     }
 	
 	protected function _delteItem($item){
+		$em = $this->getEntityManager();
 		if($item){
 			$em->remove($item);
 			$em->flush();

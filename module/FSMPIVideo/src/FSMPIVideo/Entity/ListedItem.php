@@ -163,6 +163,10 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	 */
 	protected $thumbnailImage;
 	
+	/**
+	 * @ORM\OneToMany(targetEntity="SuggestedTitle", mappedBy="listedItem")
+	 */
+	protected $suggestedTitles;
 	
 	public function __construct(){
 		$this->responsibleUsers = new ArrayCollection;
@@ -270,6 +274,11 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 	 * @return string
 	 */
 	public function getThumbnailImage(){ return $this->thumbnailImage; }
+	
+	/**
+	 * @return array
+	 */
+	public function getSuggestedTitles(){ return $this->suggestedTitles;  }
 	
 	//---------------------------
 	// Setter
@@ -617,14 +626,6 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 		if(empty($this->getAlias()))
 			$this->setAlias($this->_generateAlias($this->getTitle()));
 		$this->setLastChange(new DateTime());
-		
-		if(!$this->zfcUserAuthentication()->hasIdentity()){
-			return;
-		}
-		
-		$identity = $this->zfcUserAuthentication()->getIdentity();
-		
-		$this->setChangedBy($identity);
 	}
 	
 	protected static function _generateAlias($title){
