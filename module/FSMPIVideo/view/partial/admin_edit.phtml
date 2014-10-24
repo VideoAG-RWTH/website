@@ -17,9 +17,13 @@ if(empty($this->delete_param_name))
 if(empty($this->edit_param_name))
 	$this->edit_param_name = 'id';
 
+$routeParams = array($this->edit_param_name => $this->id);
+if(!empty($this->parent_param_name))
+	$routeParams = array($this->parent_param_name => $this->parent_id) + $routeParams;
+
 $form = $this->form;
 $form->prepare();
-$form->setAttribute('action', $this->url($edit_route, array($this->edit_param_name => $this->id)));
+$form->setAttribute('action', $this->url($edit_route, $routeParams));
 $form->setAttribute('method', 'post');
 ?>
 

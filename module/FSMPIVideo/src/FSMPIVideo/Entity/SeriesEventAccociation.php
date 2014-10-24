@@ -39,7 +39,7 @@ class SeriesEventAssociation implements InputFilterAwareInterface, JsonSerializa
 	/**
 	 * @ORM\Column(type="integer");
 	 */
-	protected $customOrder;
+	protected $customOrder = 0;
 	
 
 	/**

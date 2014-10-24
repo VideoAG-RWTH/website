@@ -16,6 +16,7 @@ use FSMPIVideo\Entity\ListedItem;
  *
  * @ORM\Entity
  * @ORM\Table(name="event")
+ * @ORM\HasLifecycleCallbacks
  * @property DateTime $date
  * @property string $place
  * @property int $duration
@@ -153,6 +154,11 @@ class Event extends ListedItem
 			)));
 
 			$inputFilter->add($factory->createInput(array(
+				'name'       => 'speaker',
+				'required'   => false,
+			)));
+
+			$inputFilter->add($factory->createInput(array(
 				'name'       => 'duration',
 				'required'   => true,
 				'filters' => array(
@@ -165,6 +171,38 @@ class Event extends ListedItem
 
 		return $this->inputFilter;
 	}
+
+	/**
+	 * @ORM\PrePersist
+	 */
+	public function prePersist(){
+		if(count($this->getSeriesAssociations()) == 0){
+			parent::prePersist();
+			return;
+		}
+		
+		$series = null;
+		foreach($this->getSeriesAssociations() as $association){
+			$series = $association->getSeries();
+			break;
+		}
+		
+		if(empty($this->getSemester()))
+			$this->setSemester($series->getSemester());
+		
+		if(empty($this->getSuperAdmin()))
+			$this->setSuperAdmin($series->getSuperAdmin());
+		
+		parent::prePersist();
+	}
+
+	/**
+	 * @ORM\PreUpdate
+	 */
+	public function preUpdate(){
+		parent::preUpdate();
+	}
+
 
 	/**
 	 * Returns data to show in json

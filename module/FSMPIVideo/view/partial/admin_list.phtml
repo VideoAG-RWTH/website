@@ -95,6 +95,12 @@ if(!empty($this->parent_list_route))
                 </td>
             <?php endforeach; ?>
             <td class="cell cell-ctrls">
+				<?php if(!empty($this->sublist_route)): ?>
+                <a href="<?php echo $this->url($this->sublist_route, array($this->parent_param_name => call_user_func(array($row, $idGetter)) ) ); ?>">
+                    <?php echo $this->translate($this->sublist_link_name) ?>
+                </a>
+                |
+				<?php endif;?>
 				<?php $routeParams = $isSublist ? array($this->parent_param_name => $this->parent_id) : array(); ?>
                 <a href="<?php echo $this->url($this->edit_route, array_merge($routeParams, array($this->edit_param_name => call_user_func(array($row, $idGetter)) )) ); ?>">
                     <?php echo $this->translate('Edit') ?>

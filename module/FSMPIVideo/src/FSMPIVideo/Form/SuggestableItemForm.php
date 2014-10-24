@@ -16,7 +16,7 @@ class SuggestableItemForm extends Form
 		
 		$this->add(array(
 			'name' => 'suggestedAt',
-			'type' => 'DateTimeSelect',
+			'type' => 'DateTimeLocal',
 			'options' => array(
 				'label' => 'Suggested At',
 			),

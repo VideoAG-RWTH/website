@@ -10,7 +10,7 @@ class EventForm extends ListedItemForm
 		
 		$this->add(array(
 			'name' => 'date',
-			'type' => 'DateTimeSelect',
+			'type' => 'DateTimeLocal',
 			'options' => array(
 				'label' => 'Date',
 			),

@@ -83,24 +83,23 @@ class ListedItemForm extends Form
 				'target_class' => 'FSMPIVideo\Entity\User',
 				'property' => 'displayName',
 				'label' => 'Created By',
-				//'display_empty_item' => true,
-				//'empty_item_label'   => '---',
 			),
 			'attributes' => array(
 				'id' => 'listeditem_created_by',
+				'disabled' => true,
 			)
 		));
 	
 		$this->add(array(
 			'name' => 'createdAt',
-			'type' => 'DateTimeSelect',
+			'type' => 'DateTimeLocal',
 			'options' => array(
 				'label' => 'Created At',
 			),
 			'attributes' => array(
 				'id' => 'listeditem_created_at',
 				'class' => 'form-control',
-				//'disabled' => 'true',
+				'disabled' => true,
 			)
 		));
 		
@@ -122,14 +121,14 @@ class ListedItemForm extends Form
 
 		$this->add(array(
 			'name' => 'lastChange',
-			'type' => 'DateTimeSelect',
+			'type' => 'DateTimeLocal',
 			'options' => array(
 				'label' => 'Last Change',
 			),
 			'attributes' => array(
 				'id' => 'listeditem_last_change',
 				'class' => 'form-control',
-				//'disabled' => 'true',
+				'disabled' => 'true',
 			)
 		));
 		
@@ -146,6 +145,7 @@ class ListedItemForm extends Form
 			),
 			'attributes' => array(
 				'id' => 'listeditem_changed_by',
+				'disabled' => true,
 			)
 		));
 		

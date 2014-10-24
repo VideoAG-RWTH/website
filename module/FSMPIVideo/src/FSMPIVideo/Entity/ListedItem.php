@@ -20,6 +20,7 @@ use DateTime;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\Table(name="listed_item")
+ * @ORM\HasLifecycleCallbacks
  * @property int $id
  * @property string $alias
  * @property string $title
@@ -436,7 +437,7 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 
 			$inputFilter->add($factory->createInput(array(
 				'name'       => 'alias',
-				'required'   => true,
+				'required'   => false,
 				'filters' => array(
 	                array('name' => 'StripTags'),
 	                array('name' => 'StringTrim'),
@@ -486,6 +487,31 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 			        array('name' => 'StripTags'),
 			        array('name' => 'StringTrim'),
 				),
+			)));
+
+			$inputFilter->add($factory->createInput(array(
+				'name'       => 'createdAt',
+				'required'   => false,
+			)));
+			
+			$inputFilter->add($factory->createInput(array(
+				'name'       => 'responsibleUsers',
+				'required'   => false,
+			)));
+		
+			$inputFilter->add($factory->createInput(array(
+				'name'       => 'createdBy',
+				'required'   => false,
+			)));
+
+			$inputFilter->add($factory->createInput(array(
+				'name'       => 'lastChange',
+				'required'   => false,
+			)));
+
+			$inputFilter->add($factory->createInput(array(
+				'name'       => 'changedBy',
+				'required'   => false,
 			)));
 
 			$inputFilter->add($factory->createInput(array(
@@ -572,7 +598,42 @@ class ListedItem implements InputFilterAwareInterface, JsonSerializable
 
 		return $this->inputFilter;
 	}
+	
+	/**
+	 * @ORM\PrePersist
+	 */
+	public function prePersist(){
+		if(empty($this->getAlias()))
+			$this->setAlias($this->_generateAlias($this->getTitle()));
+		
+		$this->setCreatedAt(new DateTime());
+		$this->setLastChange(new DateTime());
+	}
 
+	/**
+	 * @ORM\PreUpdate
+	 */
+	public function preUpdate(){
+		if(empty($this->getAlias()))
+			$this->setAlias($this->_generateAlias($this->getTitle()));
+		$this->setLastChange(new DateTime());
+		
+		if(!$this->zfcUserAuthentication()->hasIdentity()){
+			return;
+		}
+		
+		$identity = $this->zfcUserAuthentication()->getIdentity();
+		
+		$this->setChangedBy($identity);
+	}
+	
+	protected static function _generateAlias($title){
+		$res = strtolower($title);
+		$res = preg_replace("/\s/", "-", $res);
+		$res = iconv('UTF-8', 'ASCII//TRANSLIT', $res);
+		return $res;
+	}
+	
 	/**
 	 * Returns json String
 	 * @return string

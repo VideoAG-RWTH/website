@@ -6,11 +6,13 @@
  * @var Form $form Creation form
  */
 
-
+$routeParams = array();
+if(!empty($this->parent_param_name))
+	$routeParams = array($this->parent_param_name => $this->parent_id);
 
 $form = $this->form;
 $form->prepare();
-$form->setAttribute('action', $this->url($this->create_route));
+$form->setAttribute('action', $this->url($this->create_route, $routeParams));
 $form->setAttribute('method', 'post');
 ?>
 

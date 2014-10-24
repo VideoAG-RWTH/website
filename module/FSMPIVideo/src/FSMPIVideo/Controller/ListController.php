@@ -36,7 +36,10 @@ abstract class ListController extends AbstractActionController
 			'page_length' => 10,
 			'delete_param_name' => 'id',
 			'edit_param_name' => 'id',
-			'id_name' => 'id'
+			'id_name' => 'id',
+			'sublist_route' => '',
+			'sublist_parent_param_name' => '',
+			'sublist_link_name' => '',
 		);
 		
 		$this->params = $params + $defaults;
@@ -124,7 +127,10 @@ abstract class ListController extends AbstractActionController
 			'create_text' => $this->params['create_text'],
 			'columns' => $this->params['list_columns'],
 			'rows' => $items,
-			'page_length' => $this->params['page_length']
+			'page_length' => $this->params['page_length'],
+			'sublist_route' => $this->params['sublist_route'],
+			'parent_param_name' => $this->params['sublist_parent_param_name'],
+			'sublist_link_name' => $this->params['sublist_link_name'],
 		);
 		return $this->_showList($params);
 	}
@@ -158,6 +164,10 @@ abstract class ListController extends AbstractActionController
 			'form' => $form,
 		);
 		return $this->_showCreateForm($params);
+	}
+	
+	protected function _preCreate($item){
+		return;
 	}
 	
 	protected function _createItem($item, $form){
@@ -204,6 +214,10 @@ abstract class ListController extends AbstractActionController
 		);
 		return $this->_showEditForm($params);
     }
+
+	protected function _preUpdate($item){
+		return;
+	}
 	
 	protected function _editItem($item, $form){
 		$form->setBindOnValidate(false);
