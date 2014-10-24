@@ -1,8 +1,8 @@
 <?php
 namespace FSMPIVideo;
 
-function create_admin_navigation($label, $controller){
-	return array(
+function create_admin_navigation($label, $controller, $morePages = array()){
+	$navi = array(
 		'label' => $label,
 		'route' => 'zfcadmin/'.$controller.'/list',
 		'pages' => array(
@@ -10,10 +10,12 @@ function create_admin_navigation($label, $controller){
 			'edit'   => array('label' => 'Edit '.$label, 'route' => 'zfcadmin/'.$controller.'/edit'),
 		),
 	);
+	$navi['pages'] = $morePages + $navi['pages'];
+	return $navi;
 }
 
-function create_child_route($controller){
-	return array(
+function create_child_route($controller, $moreChildRoutes = array()){
+	$config = array(
         'type' => 'Literal',
         'options' => array(
             'route' => '/'.$controller,
@@ -76,76 +78,9 @@ function create_child_route($controller){
 			),
 		),
     );	
+	$config['child_routes'] = $moreChildRoutes + $config['child_routes'];
+	return $config;
 }
-
-$seriesRoute = create_child_route('series');
-$seriesRoute['child_routes']['events'] = array(
-    'type' => 'Segment',
-    'options' => array(
-        'route' => '/events/:id',
-        'defaults' => array(
-            'controller' => 'series',
-            'action'     => 'index',
-			'id'         => 0
-        ),
-		'constraints' => array(
-			'id'    => '[0-9]+',
-		),
-    ),
-    'child_routes' => array(
-		'list' => array(
-			'type' => 'Segment',
-			'options' => array(
-				'route' => '/list[/:p]',
-				'defaults' => array(
-					'controller' => 'series',
-					'action'     => 'events',
-				),
-				'constraints' => array(
-					'p'         => '[0-9]*',
-				),
-			),
-		),
-		'create' => array(
-			'type' => 'Literal',
-			'options' => array(
-				'route' => '/create',
-				'defaults' => array(
-					'controller' => 'series',
-					'action'     => 'createEvent'
-				),
-			),
-		),
-		'edit' => array(
-			'type' => 'Segment',
-			'options' => array(
-				'route' => '/edit/:eventId',
-				'defaults' => array(
-					'controller' => 'series',
-					'action'     => 'editEvent',
-					'eventId'    => 0
-				),
-				'constraints' => array(
-					'eventId'    => '[0-9]+',
-				),
-			),
-		),
-		'delete' => array(
-			'type' => 'Segment',
-			'options' => array(
-				'route' => '/delete/:eventId',
-				'defaults' => array(
-					'controller' => 'series',
-					'action'     => 'deleteEvent',
-					'eventId'    => 0
-				),
-				'constraints' => array(
-					'eventId'    => '[0-9]+',
-				),
-			),
-		),
-	),
-);
 
 return array(
 	'controllers' => array(
@@ -184,7 +119,77 @@ return array(
 	                'videoquality' => create_child_route('videoquality'),
 	                'suggestedtitle' => create_child_route('suggestedtitle'),
 	                'listeditem' => create_child_route('listeditem'),
-	                'series' => $seriesRoute,
+	                'series' => create_child_route('series', array(
+						'events' => array(
+						    'type' => 'Segment',
+						    'options' => array(
+						        'route' => '/events/:id[-:alias]',
+						        'defaults' => array(
+						            'controller' => 'series',
+						            'action'     => 'index',
+									'id'         => 0,
+									'alias'      => ''
+						        ),
+								'constraints' => array(
+									'id'    => '[0-9]+',
+									'alias'    => '[a-zA-Z0-9_-]*',
+								),
+						    ),
+						    'child_routes' => array(
+								'list' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/list[/:p]',
+										'defaults' => array(
+											'controller' => 'series',
+											'action'     => 'events',
+										),
+										'constraints' => array(
+											'p'         => '[0-9]*',
+										),
+									),
+								),
+								'create' => array(
+									'type' => 'Literal',
+									'options' => array(
+										'route' => '/create',
+										'defaults' => array(
+											'controller' => 'series',
+											'action'     => 'createEvent'
+										),
+									),
+								),
+								'edit' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/edit/:eventId',
+										'defaults' => array(
+											'controller' => 'series',
+											'action'     => 'editEvent',
+											'eventId'    => 0
+										),
+										'constraints' => array(
+											'eventId'    => '[0-9]+',
+										),
+									),
+								),
+								'delete' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/delete/:eventId',
+										'defaults' => array(
+											'controller' => 'series',
+											'action'     => 'deleteEvent',
+											'eventId'    => 0
+										),
+										'constraints' => array(
+											'eventId'    => '[0-9]+',
+										),
+									),
+								),
+							),
+						),
+					)),
 	                'event' => create_child_route('event'),
 				),
 			),
@@ -245,7 +250,16 @@ return array(
 			'lecturer' => create_admin_navigation('Lecturer', 'lecturer'),
 			'videoquality' => create_admin_navigation('VideoQuality', 'videoquality'),
 			'suggestedtitle' => create_admin_navigation('SuggestedTitle', 'suggestedtitle'),
-			'series' => create_admin_navigation('Series', 'series'),
+			'series' => create_admin_navigation('Series', 'series', array(
+				'events' => array(
+					'label' => 'Events',
+					'route' => 'zfcadmin/series/events/list',
+					'pages' => array(
+						'create' => array('label' => 'New Event',  'route' => 'zfcadmin/series/events/create'),
+						'edit'   => array('label' => 'Edit Event', 'route' => 'zfcadmin/series/events/edit'),
+					)
+				),
+			)),
 			'event' => create_admin_navigation('Events', 'event'),
 		),
 	),
