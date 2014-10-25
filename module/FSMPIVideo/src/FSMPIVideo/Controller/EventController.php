@@ -1,7 +1,7 @@
 <?php
 namespace FSMPIVideo\Controller;
 
-class EventController extends ListController
+class EventController extends ListedItemController
 {
 	public function __construct(){
 		$params = array('list_columns' => array('Id' => 'id', 'Title' => 'title', 'Date' => 'date', 'Place' => 'place'));
