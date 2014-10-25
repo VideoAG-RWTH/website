@@ -5,12 +5,12 @@
 
         <!-- First page link -->
         <li<?php echo (isset($this->previous)) ? '' : ' class="disabled"'; ?>>
-            <a href="<?php echo $this->url($this->list_route, array('p' => $this->first)); ?>">&lt;&lt; First</a>
+            <a href="<?php echo $this->url($this->list_route, array_merge($routeParams, array('p' => $this->first))); ?>">&lt;&lt; First</a>
         </li>
 
         <!-- Previous page link -->
         <li<?php echo (isset($this->previous)) ? '' : ' class="disabled"'; ?>>
-            <a href="<?php echo $this->url($this->list_route, array_merge($routeParams, array('p' => $this->previous-9))); ?>">&lt; Previous 10</a>
+            <a href="<?php echo $this->url($this->list_route, array_merge($routeParams, array('p' => $this->previous-9)) ); ?>">&lt; Previous 10</a>
         </li>
 
         <!-- Numbered page links -->

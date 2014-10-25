@@ -107,10 +107,13 @@ if(!empty($this->parent_list_route))
 							if($isSublist && !empty($this->parent_alias))
 								$routeParams = array('alias' => $this->parent_alias) + $routeParams;
 							
+							if(empty($button['more_params']))
+								$button['more_params'] = array();
+							
 							$buttons[] = array(
 								'title' => $button['title'],
 								'route' => $button['route'],
-								'params' => $routeParams
+								'params' => $button['more_params'] + $routeParams
 							);
 						}
 					
@@ -142,6 +145,8 @@ if(!empty($this->parent_list_route))
 					if(!empty($this->delete_route)){
 						$routeParams = $isSublist ? array($this->parent_param_name => $this->parent_id) : array();
 						$routeParams[$this->delete_param_name] = call_user_func(array($row, $idGetter));
+						if($isSublist && !empty($this->parent_alias))
+							$routeParams = array('alias' => $this->parent_alias) + $routeParams;
 						$buttons[] = array(
 							'title' => "Delete",
 							'route' => $this->delete_route,

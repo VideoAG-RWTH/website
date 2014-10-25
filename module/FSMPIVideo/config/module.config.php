@@ -51,7 +51,7 @@ function create_child_route($controller, $moreChildRoutes = array()){
 			'edit' => array(
 				'type' => 'Segment',
 				'options' => array(
-					'route' => '/edit/:id',
+					'route' => '/:id/edit',
 					'defaults' => array(
 						'controller' => $controller,
 						'action'     => 'edit',
@@ -65,7 +65,7 @@ function create_child_route($controller, $moreChildRoutes = array()){
 			'delete' => array(
 				'type' => 'Segment',
 				'options' => array(
-					'route' => '/delete/:id',
+					'route' => '/:id/delete',
 					'defaults' => array(
 						'controller' => $controller,
 						'action'     => 'delete',
@@ -80,6 +80,68 @@ function create_child_route($controller, $moreChildRoutes = array()){
     );	
 	$config['child_routes'] = $moreChildRoutes + $config['child_routes'];
 	return $config;
+}
+
+/**
+ * Route for SuggestedTitles for ListedItems
+ */
+function create_title_child_route($controller, $parent_parm_name = 'id'){
+	return array(
+		'type' => 'Segment',
+		'options' => array(
+	        'route' => '/:'.$parent_parm_name.'[-:alias]/titles',
+	        'defaults' => array(
+	            'controller' => $controller,
+	            'action'     => 'index',
+				'alias'      => ''
+	        ),
+			'constraints' => array(
+				$parent_parm_name    => '[0-9]+',
+				'alias'    => '[a-zA-Z0-9_-]*',
+			),
+		),
+		'child_routes' => array(
+			'list' => array(
+				'type' => 'Segment',
+				'options' => array(
+					'route' => '/list[/:p]',
+					'defaults' => array(
+						'controller' => $controller,
+						'action'     => 'titles',
+					),
+					'constraints' => array(
+						'p'         => '[0-9]*',
+					),
+				),
+			),
+			'accept' => array(
+				'type' => 'Segment',
+				'options' => array(
+					'route' => '/:titleId/accept',
+					'defaults' => array(
+						'controller' => $controller,
+						'action'     => 'acceptTitle',
+					),
+					'constraints' => array(
+						'titleId'         => '[0-9]+',
+					),
+				),
+			),
+			'decline' => array(
+				'type' => 'Segment',
+				'options' => array(
+					'route' => '/:titleId/decline',
+					'defaults' => array(
+						'controller' => $controller,
+						'action'     => 'declineTitle',
+					),
+					'constraints' => array(
+						'titleId'         => '[0-9]+',
+					),
+				),
+			),
+	    ),
+	);
 }
 
 return array(
@@ -120,67 +182,11 @@ return array(
 	                'suggestedtitle' => create_child_route('suggestedtitle'),
 	                'listeditem' => create_child_route('listeditem'),
 	                'series' => create_child_route('series', array(
-						'titles' => array(
-							'type' => 'Segment',
-							'options' => array(
-						        'route' => '/titles/:id[-:alias]',
-						        'defaults' => array(
-						            'controller' => 'series',
-						            'action'     => 'index',
-									'id'         => 0,
-									'alias'      => ''
-						        ),
-								'constraints' => array(
-									'id'    => '[0-9]+',
-									'alias'    => '[a-zA-Z0-9_-]*',
-								),
-							),
-							'child_routes' => array(
-								'list' => array(
-									'type' => 'Segment',
-									'options' => array(
-										'route' => '/list[/:p]',
-										'defaults' => array(
-											'controller' => 'series',
-											'action'     => 'titles',
-										),
-										'constraints' => array(
-											'p'         => '[0-9]*',
-										),
-									),
-								),
-								'accept' => array(
-									'type' => 'Segment',
-									'options' => array(
-										'route' => '/accept/:titleId',
-										'defaults' => array(
-											'controller' => 'series',
-											'action'     => 'acceptTitle',
-										),
-										'constraints' => array(
-											'titleId'         => '[0-9]+',
-										),
-									),
-								),
-								'decline' => array(
-									'type' => 'Segment',
-									'options' => array(
-										'route' => '/decline/:titleId',
-										'defaults' => array(
-											'controller' => 'series',
-											'action'     => 'declineTitle',
-										),
-										'constraints' => array(
-											'titleId'         => '[0-9]+',
-										),
-									),
-								),
-						    ),
-						),
+						'titles' => create_title_child_route('series'),
 						'events' => array(
 						    'type' => 'Segment',
 						    'options' => array(
-						        'route' => '/events/:id[-:alias]',
+						        'route' => '/:id[-:alias]/events',
 						        'defaults' => array(
 						            'controller' => 'series',
 						            'action'     => 'index',
@@ -193,6 +199,62 @@ return array(
 								),
 						    ),
 						    'child_routes' => array(
+								'titles' => array(
+									'type' => 'Segment',
+									'options' => array(
+								        'route' => '/:eventId[-:eventAlias]/titles',
+								        'defaults' => array(
+								            'controller' => 'series',
+								            'action'     => 'index',
+											'eventAlias'      => ''
+								        ),
+										'constraints' => array(
+											'eventId'       => '[0-9]+',
+											'eventAlias'    => '[a-zA-Z0-9_-]*',
+										),
+									),
+									'child_routes' => array(
+										'list' => array(
+											'type' => 'Segment',
+											'options' => array(
+												'route' => '/list[/:p]',
+												'defaults' => array(
+													'controller' => 'series',
+													'action'     => 'eventTitles',
+												),
+												'constraints' => array(
+													'p'         => '[0-9]*',
+												),
+											),
+										),
+										'accept' => array(
+											'type' => 'Segment',
+											'options' => array(
+												'route' => '/:titleId/accept',
+												'defaults' => array(
+													'controller' => 'series',
+													'action'     => 'acceptEventTitle',
+												),
+												'constraints' => array(
+													'titleId'         => '[0-9]+',
+												),
+											),
+										),
+										'decline' => array(
+											'type' => 'Segment',
+											'options' => array(
+												'route' => '/:titleId/decline',
+												'defaults' => array(
+													'controller' => 'series',
+													'action'     => 'declineEventTitle',
+												),
+												'constraints' => array(
+													'titleId'         => '[0-9]+',
+												),
+											),
+										),
+								    ),
+								),
 								'list' => array(
 									'type' => 'Segment',
 									'options' => array(
@@ -219,7 +281,7 @@ return array(
 								'edit' => array(
 									'type' => 'Segment',
 									'options' => array(
-										'route' => '/edit/:eventId',
+										'route' => '/:eventId/edit',
 										'defaults' => array(
 											'controller' => 'series',
 											'action'     => 'editEvent',
@@ -233,7 +295,7 @@ return array(
 								'delete' => array(
 									'type' => 'Segment',
 									'options' => array(
-										'route' => '/delete/:eventId',
+										'route' => '/:eventId/delete',
 										'defaults' => array(
 											'controller' => 'series',
 											'action'     => 'deleteEvent',
@@ -247,7 +309,9 @@ return array(
 							),
 						),
 					)),
-	                'event' => create_child_route('event'),
+	                'event' => create_child_route('event', array(
+						'titles' => create_title_child_route('event')
+					)),
 				),
 			),
 		),
@@ -308,16 +372,23 @@ return array(
 			'videoquality' => create_admin_navigation('VideoQuality', 'videoquality'),
 			'suggestedtitle' => create_admin_navigation('SuggestedTitle', 'suggestedtitle'),
 			'series' => create_admin_navigation('Series', 'series', array(
+				'titles' => array(
+					'label' => 'Titles',
+					'route' => 'zfcadmin/series/titles/list',
+				),
 				'events' => array(
 					'label' => 'Events',
 					'route' => 'zfcadmin/series/events/list',
 					'pages' => array(
 						'create' => array('label' => 'New Event',  'route' => 'zfcadmin/series/events/create'),
 						'edit'   => array('label' => 'Edit Event', 'route' => 'zfcadmin/series/events/edit'),
+						'titles' => array('label' => 'Titles',     'route' => 'zfcadmin/series/events/titles/list')
 					)
 				),
 			)),
-			'event' => create_admin_navigation('Events', 'event'),
+			'event' => create_admin_navigation('Events', 'event', array(
+				'titles' => array( 'label' => 'Titles', 'route' => 'zfcadmin/event/titles/list' ),
+			)),
 		),
 	),
 

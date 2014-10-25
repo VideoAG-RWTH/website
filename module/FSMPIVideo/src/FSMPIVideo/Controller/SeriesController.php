@@ -23,7 +23,13 @@ class SeriesController extends ListedItemController
 			'subedit_param_name' => 'eventId',
 			'sublist_parent_param_name' => 'id',
 			'sublist_route' => 'zfcadmin/series/events/list',
-			'sublist_link_name' => 'Events'
+			'sublist_link_name' => 'Events',
+			'eventtitlelist_parent_param_name' => 'eventId',
+			'eventtitlelist_route' => 'zfcadmin/series/events/titles/list',
+			'eventtitleaccept_route' => 'zfcadmin/series/events/titles/accept',
+			'eventtitledecline_route' => 'zfcadmin/series/events/titles/decline',
+			'eventtitleaccept_param_name' => 'titleId',
+			'eventtitledecline_param_name' => 'titleId'
 		);
 		parent::__construct($params);
 	}
@@ -140,7 +146,7 @@ class SeriesController extends ListedItemController
 
 		if($this->_editItem($item, $form)){
             $this->flashMessenger()->addSuccessMessage('The Event was edited');
-            return $this->redirect()->toRoute($this->params['sublist_route'], array($this->params['sublist_parent_param_name'] => $series->getId()));
+            return $this->_redirectToSublist($series);
 		}
 
 		$params = array(
@@ -157,7 +163,11 @@ class SeriesController extends ListedItemController
 		);
 		return $this->_showEditForm($params);
     }
-
+	
+	protected function _redirectToSublist($series){
+        return $this->redirect()->toRoute($this->params['sublist_route'], array($this->params['sublist_parent_param_name'] => $series->getId()));
+	}
+	
     public function deleteEventAction(){
 		$em = $this->getEntityManager();
 		
@@ -209,5 +219,94 @@ class SeriesController extends ListedItemController
 		$identity = $this->zfcUserAuthentication()->getIdentity();
 		
 		$item->setChangedBy($identity);
+	}
+	
+	public function eventTitlesAction(){
+		$em = $this->getEntityManager();
+		
+		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['sublist_parent_param_name']);
+		$series = $em->getRepository("\\FSMPIVideo\\Entity\\Series")->find($id);
+		if(!$series)
+			return $this->_redirectToList();
+		
+		
+		$eventId = $this->getEvent()->getRouteMatch()->getParam($this->params['eventtitlelist_parent_param_name']);
+		$event = $em->getRepository("\\FSMPIVideo\\Entity\\Event")->find($eventId);
+		if(!$event)
+            return $this->_redirectToSublist($series);
+
+		$titles = $event->getSuggestedTitles();
+		$titles = $titles->toArray();
+		
+		$params = array(
+			'title' => $this->params['titlelist_title'],
+			'list_route' => $this->params['eventtitlelist_route'],
+			'columns' => $this->params['titlelist_columns'],
+			'rows' => $titles,
+			'page_length' => $this->params['page_length'],
+			'parent_list_route' => $this->params['sublist_route'],
+			'parent_param_name' => $this->params['eventtitlelist_parent_param_name'],
+			'parent_id' => $event->getId(),
+			'parent_alias' => $event->getAlias(),
+			'row_buttons' => array(
+				array(
+					'title' => 'Accept',
+					'route' => $this->params['eventtitleaccept_route'],
+					'param_name' => $this->params['eventtitleaccept_param_name'],
+					'more_params' => array(
+						$this->params['sublist_parent_param_name'] => $series->getId(), 
+						'alias' => $series->getAlias(),
+						$this->params['eventtitlelist_parent_param_name'] => $event->getId(),
+						'eventAlias' => $event->getAlias(),
+					)
+				),
+				array(
+					'title' => 'Decline',
+					'route' => $this->params['eventtitledecline_route'],
+					'param_name' => $this->params['eventtitledecline_param_name'],
+					'more_params' => array(
+						$this->params['sublist_parent_param_name'] => $series->getId(), 
+						'alias' => $series->getAlias(),
+						$this->params['eventtitlelist_parent_param_name'] => $event->getId(),
+						'eventAlias' => $event->getAlias(),
+					)
+				)
+			)
+		);
+		return $this->_showList($params);
+	}
+
+	public function acceptEventTitleAction(){
+		return $this->_acceptTitle(array(
+			'titlelist_parent_param_name' => $this->params['eventtitlelist_parent_param_name'],
+			'titleaccept_param_name' => $this->params['eventtitleaccept_param_name'],
+		));
+	}
+	
+	public function declineEventTitleAction(){
+		return $this->_declineTitle(array(
+			'titlelist_parent_param_name' => $this->params['eventtitlelist_parent_param_name'],
+			'titledecline_param_name' => $this->params['eventtitledecline_param_name'],
+		));
+	}
+	
+	
+	protected function _redirectToTitlelist($item){
+		if($item instanceof Event){
+			$em = $this->getEntityManager();
+			$id = $this->getEvent()->getRouteMatch()->getParam($this->params['sublist_parent_param_name']);
+			$series = $em->getRepository("\\FSMPIVideo\\Entity\\Series")->find($id);
+			if(!$series)
+				parent::_redirectToTitlelist($item);
+			
+			return $this->redirect()->toRoute($this->params['eventtitlelist_route'], array(
+				$this->params['sublist_parent_param_name'] => $series->getId(), 
+				'alias' => $series->getAlias(),
+				$this->params['eventtitlelist_parent_param_name'] => $item->getId(),
+				'eventAlias' => $item->getAlias(),
+			));
+		}
+		else 
+			return parent::_redirectToTitlelist($item);
 	}
 }

@@ -41,8 +41,6 @@ class ListedItemController extends ListController
 			'columns' => $this->params['titlelist_columns'],
 			'rows' => $titles,
 			'page_length' => $this->params['page_length'],
-			'edit_param_name' => $this->params['subedit_param_name'],
-			'delete_param_name' => $this->params['subdelete_param_name'],
 			'parent_list_route' => $this->params['list_route'],
 			'parent_param_name' => $this->params['sublist_parent_param_name'],
 			'parent_id' => $item->getId(),
@@ -64,14 +62,21 @@ class ListedItemController extends ListController
 	}
 	
 	public function acceptTitleAction(){
+		return $this->_acceptTitle(array(
+			'titlelist_parent_param_name' => $this->params['titlelist_parent_param_name'],
+			'titledecline_param_name' => $this->params['titleaccept_param_name'],
+		));
+	}
+	
+	protected function _acceptTitle($params){
 		$em = $this->getEntityManager();
 		
-		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['titlelist_parent_param_name']);
+		$id = $this->getEvent()->getRouteMatch()->getParam($params['titlelist_parent_param_name']);
 		$item = $em->getRepository("\\FSMPIVideo\\Entity\\ListedItem")->find($id);
 		if(!$item)
 			return $this->_redirectToList();
 	
-        $titleId = $this->getEvent()->getRouteMatch()->getParam($this->params['titleaccept_param_name']);
+        $titleId = $this->getEvent()->getRouteMatch()->getParam($params['titleaccept_param_name']);
 		
 		if(!$titleId)
 			return $this->_redirectToTitlelist($item);
@@ -95,30 +100,37 @@ class ListedItemController extends ListController
 	}
 	
 	public function declineTitleAction(){
+		return $this->_declineTitle(array(
+			'titlelist_parent_param_name' => $this->params['titlelist_parent_param_name'],
+			'titledecline_param_name' => $this->params['titledecline_param_name'],
+		));
+	}
+	
+	protected function _declineTitle($params){
 		$em = $this->getEntityManager();
-		
-		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['titlelist_parent_param_name']);
+
+		$id = $this->getEvent()->getRouteMatch()->getParam($params['titlelist_parent_param_name']);
 		$item = $em->getRepository("\\FSMPIVideo\\Entity\\ListedItem")->find($id);
 		if(!$item)
 			return $this->_redirectToList();
-	
-        $titleId = $this->getEvent()->getRouteMatch()->getParam($this->params['titledecline_param_name']);
-		
+
+        $titleId = $this->getEvent()->getRouteMatch()->getParam($params['titledecline_param_name']);
+
 		if(!$titleId)
 			return $this->_redirectToTitlelist($item);
-		
+
 		$title = $em->getRepository("\\FSMPIVideo\\Entity\\SuggestedTitle")->find((int)$titleId);
 		if(!$title)
 			return $this->_redirectToTitlelist($item);
-		
+
 		$title->setIsViewed(true);
-		
+
 		if($this->zfcUserAuthentication()->hasIdentity()){
 			$identity = $this->zfcUserAuthentication()->getIdentity();
 			$title->setViewedBy($identity);
 		}
 		$em->flush();
-		
+
 		$this->flashMessenger()->addSuccessMessage('The title was declined correctly');
 		return $this->_redirectToTitlelist($item);
 	}
