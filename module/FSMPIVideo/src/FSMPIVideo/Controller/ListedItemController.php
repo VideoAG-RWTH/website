@@ -43,6 +43,7 @@ class ListedItemController extends ListController
 			'sublist_route' => $this->params['sublist_route'],
 			'parent_param_name' => $this->params['sublist_parent_param_name'],
 			'sublist_link_name' => $this->params['sublist_link_name'],
+			'item_alias_name' => $this->params['item_alias_name'],
 			'row_buttons' => array(
 				array(
 					'title' => 'Titles',
