@@ -281,28 +281,32 @@ return array(
 								'edit' => array(
 									'type' => 'Segment',
 									'options' => array(
-										'route' => '/:eventId/edit',
+										'route' => '/:eventId[-:eventAlias]/edit',
 										'defaults' => array(
 											'controller' => 'series',
 											'action'     => 'editEvent',
-											'eventId'    => 0
+											'eventId'    => 0,
+											'eventAlias' => ''
 										),
 										'constraints' => array(
 											'eventId'    => '[0-9]+',
+											'eventAlias'    => '[a-zA-Z0-9_-]*',
 										),
 									),
 								),
 								'delete' => array(
 									'type' => 'Segment',
 									'options' => array(
-										'route' => '/:eventId/delete',
+										'route' => '/:eventId[-:eventAlias]/delete',
 										'defaults' => array(
 											'controller' => 'series',
 											'action'     => 'deleteEvent',
-											'eventId'    => 0
+											'eventId'    => 0,
+											'eventAlias' => ''
 										),
 										'constraints' => array(
 											'eventId'    => '[0-9]+',
+											'eventAlias'    => '[a-zA-Z0-9_-]*',
 										),
 									),
 								),

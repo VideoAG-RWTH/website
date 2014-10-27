@@ -24,6 +24,7 @@ class SeriesController extends ListedItemController
 			'sublist_parent_param_name' => 'id',
 			'sublist_route' => 'zfcadmin/series/events/list',
 			'sublist_link_name' => 'Events',
+			'subitem_alias_name' => 'eventAlias',
 			'eventtitlelist_parent_param_name' => 'eventId',
 			'eventtitlelist_route' => 'zfcadmin/series/events/titles/list',
 			'eventtitleaccept_route' => 'zfcadmin/series/events/titles/accept',
@@ -74,6 +75,14 @@ class SeriesController extends ListedItemController
 			'parent_param_name' => $this->params['sublist_parent_param_name'],
 			'parent_id' => $series->getId(),
 			'parent_alias' => $series->getAlias(),
+			'item_alias_name' => $this->params['subitem_alias_name'],
+			'row_buttons' => array(
+				array(
+					'title' => 'Titles',
+					'route' => $this->params['eventtitlelist_route'],
+					'param_name' => $this->params['eventtitlelist_parent_param_name'],
+				)
+			)
 		);
 		return $this->_showList($params);
 	}

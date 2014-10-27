@@ -99,13 +99,16 @@ if(!empty($this->parent_list_route))
             <td class="cell cell-ctrls">
 				<?php
 					$buttons = array();
-					if(!empty($this->row_buttons))
+					if(!empty($this->row_buttons)){
 						foreach($this->row_buttons as $button){
 							$routeParams = $isSublist ? array($this->parent_param_name => $this->parent_id) : array();
 							$routeParams[$button['param_name']] = call_user_func(array($row, $idGetter));
 							
 							if($isSublist && !empty($this->parent_alias))
 								$routeParams = array('alias' => $this->parent_alias) + $routeParams;
+							
+							if(!empty($this->item_alias_name) && method_exists($row, 'getAlias'))
+								$routeParams = array($this->item_alias_name => $row->getAlias()) + $routeParams;
 							
 							if(empty($button['more_params']))
 								$button['more_params'] = array();
@@ -116,11 +119,12 @@ if(!empty($this->parent_list_route))
 								'params' => $button['more_params'] + $routeParams
 							);
 						}
+					}
 					
 					if(!empty($this->sublist_route)){
 						$routeParams = array($this->parent_param_name => call_user_func(array($row, $idGetter)) );
-						if(method_exists($row, 'getAlias'))
-							$routeParams = array('alias' => $row->getAlias()) + $routeParams;
+						if(!empty($this->item_alias_name) && method_exists($row, 'getAlias'))
+							$routeParams = array($this->item_alias_name => $row->getAlias()) + $routeParams;
 						
 						$buttons[] = array(
 							'title' => $this->sublist_link_name,
@@ -135,6 +139,9 @@ if(!empty($this->parent_list_route))
 						if($isSublist && !empty($this->parent_alias))
 							$routeParams = array('alias' => $this->parent_alias) + $routeParams;
 						
+						if(!empty($this->item_alias_name) && method_exists($row, 'getAlias'))
+							$routeParams = array($this->item_alias_name => $row->getAlias()) + $routeParams;
+						
 						$buttons[] = array(
 							'title' => "Edit",
 							'route' => $this->edit_route,
@@ -147,6 +154,10 @@ if(!empty($this->parent_list_route))
 						$routeParams[$this->delete_param_name] = call_user_func(array($row, $idGetter));
 						if($isSublist && !empty($this->parent_alias))
 							$routeParams = array('alias' => $this->parent_alias) + $routeParams;
+						
+						if(!empty($this->item_alias_name) && method_exists($row, 'getAlias'))
+							$routeParams = array($this->item_alias_name => $row->getAlias()) + $routeParams;
+						
 						$buttons[] = array(
 							'title' => "Delete",
 							'route' => $this->delete_route,

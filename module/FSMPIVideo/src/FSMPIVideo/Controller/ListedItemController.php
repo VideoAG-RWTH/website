@@ -24,6 +24,38 @@ class ListedItemController extends ListController
 		parent::__construct($params);
 	}
 	
+	
+	public function listAction(){
+		$em = $this->getEntityManager();
+		$items = $this->getAll();
+		
+		$params = array(
+			'title' => $this->params['list_title'],
+			'list_route' => $this->params['list_route'],
+			'create_route' => $this->params['create_route'],
+			'edit_route' => $this->params['edit_route'],
+			'delete_route' => $this->params['delete_route'],
+			'delete_warning_text' => $this->params['delete_warning_text'],
+			'create_text' => $this->params['create_text'],
+			'columns' => $this->params['list_columns'],
+			'rows' => $items,
+			'page_length' => $this->params['page_length'],
+			'sublist_route' => $this->params['sublist_route'],
+			'parent_param_name' => $this->params['sublist_parent_param_name'],
+			'sublist_link_name' => $this->params['sublist_link_name'],
+			'row_buttons' => array(
+				array(
+					'title' => 'Titles',
+					'route' => $this->params['titlelist_route'],
+					'param_name' => $this->params['titlelist_parent_param_name'],
+				)
+			)
+			
+		);
+		return $this->_showList($params);
+	}
+	
+	
 	public function titlesAction(){
 		$em = $this->getEntityManager();
 		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['titlelist_parent_param_name']);

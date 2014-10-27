@@ -40,6 +40,7 @@ abstract class ListController extends AbstractActionController
 			'sublist_route' => '',
 			'sublist_parent_param_name' => '',
 			'sublist_link_name' => '',
+			'item_alias_name' => 'alias',
 		);
 		
 		$this->params = $params + $defaults;
@@ -131,6 +132,7 @@ abstract class ListController extends AbstractActionController
 			'sublist_route' => $this->params['sublist_route'],
 			'parent_param_name' => $this->params['sublist_parent_param_name'],
 			'sublist_link_name' => $this->params['sublist_link_name'],
+			'item_alias_name' => $this->params['item_alias_name'],
 		);
 		return $this->_showList($params);
 	}

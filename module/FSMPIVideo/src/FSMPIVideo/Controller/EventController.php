@@ -8,6 +8,17 @@ class EventController extends ListedItemController
 		parent::__construct($params);
 	}
 	
+	protected function getAll(){
+		$em = $this->getEntityManager();
+		$items = $em->getRepository("\\FSMPIVideo\\Entity\\Event")->findAll();
+		$events = array();
+		foreach($items as $item){
+			if(empty($item->getSeriesAssociations()) || count($item->getSeriesAssociations()) == 0)
+				$events[] = $item;
+		}
+		return $events;
+	}
+	
 	protected function _preCreate($item){
 		if(!$this->zfcUserAuthentication()->hasIdentity()){
 			return;
