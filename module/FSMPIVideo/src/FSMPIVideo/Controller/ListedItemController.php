@@ -97,7 +97,7 @@ class ListedItemController extends ListController
 	public function acceptTitleAction(){
 		return $this->_acceptTitle(array(
 			'titlelist_parent_param_name' => $this->params['titlelist_parent_param_name'],
-			'titledecline_param_name' => $this->params['titleaccept_param_name'],
+			'titleaccept_param_name' => $this->params['titleaccept_param_name'],
 		));
 	}
 	

@@ -255,6 +255,62 @@ return array(
 										),
 								    ),
 								),
+								'markers' => array(
+									'type' => 'Segment',
+									'options' => array(
+								        'route' => '/:eventId[-:eventAlias]/markers',
+								        'defaults' => array(
+								            'controller' => 'series',
+								            'action'     => 'index',
+											'eventAlias'      => ''
+								        ),
+										'constraints' => array(
+											'eventId'     => '[0-9]+',
+											'eventAlias'  => '[a-zA-Z0-9_-]*',
+										),
+									),
+									'child_routes' => array(
+										'list' => array(
+											'type' => 'Segment',
+											'options' => array(
+												'route' => '/list[/:p]',
+												'defaults' => array(
+													'controller' => 'series',
+													'action'     => 'eventMarkers',
+												),
+												'constraints' => array(
+													'p'         => '[0-9]*',
+												),
+											),
+										),
+										'accept' => array(
+											'type' => 'Segment',
+											'options' => array(
+												'route' => '/:markerId/accept',
+												'defaults' => array(
+													'controller' => 'series',
+													'action'     => 'acceptEventMarker',
+												),
+												'constraints' => array(
+													'markerId'         => '[0-9]+',
+												),
+											),
+										),
+										'decline' => array(
+											'type' => 'Segment',
+											'options' => array(
+												'route' => '/:markerId/decline',
+												'defaults' => array(
+													'controller' => 'series',
+													'action'     => 'declineEventMarker',
+												),
+												'constraints' => array(
+													'markerId'         => '[0-9]+',
+												),
+											),
+										),
+								    ),
+								),
 								'list' => array(
 									'type' => 'Segment',
 									'options' => array(
@@ -314,7 +370,63 @@ return array(
 						),
 					)),
 	                'event' => create_child_route('event', array(
-						'titles' => create_title_child_route('event')
+						'titles' => create_title_child_route('event'),
+						'markers' => array(
+							'type' => 'Segment',
+							'options' => array(
+						        'route' => '/:id[-:alias]/markers',
+						        'defaults' => array(
+						            'controller' => 'event',
+						            'action'     => 'index',
+									'alias'      => ''
+						        ),
+								'constraints' => array(
+									'id'     => '[0-9]+',
+									'alias'  => '[a-zA-Z0-9_-]*',
+								),
+							),
+							'child_routes' => array(
+								'list' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/list[/:p]',
+										'defaults' => array(
+											'controller' => 'event',
+											'action'     => 'markers',
+										),
+										'constraints' => array(
+											'p'         => '[0-9]*',
+										),
+									),
+								),
+								'accept' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/:markerId/accept',
+										'defaults' => array(
+											'controller' => 'event',
+											'action'     => 'acceptMarker',
+										),
+										'constraints' => array(
+											'markerId'         => '[0-9]+',
+										),
+									),
+								),
+								'decline' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/:markerId/decline',
+										'defaults' => array(
+											'controller' => 'event',
+											'action'     => 'declineMarker',
+										),
+										'constraints' => array(
+											'markerId'         => '[0-9]+',
+										),
+									),
+								),
+						    ),
+						),
 					)),
 				),
 			),

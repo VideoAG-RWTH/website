@@ -4,7 +4,17 @@ namespace FSMPIVideo\Controller;
 class EventController extends ListedItemController
 {
 	public function __construct(){
-		$params = array('list_columns' => array('Id' => 'id', 'Title' => 'title', 'Date' => 'date', 'Place' => 'place'));
+		$params = array(
+			'list_columns' => array('Id' => 'id', 'Title' => 'title', 'Date' => 'date', 'Place' => 'place'),
+			'markerlist_title' => 'Markers',
+			'markerlist_route' => 'zfcadmin/event/markers/list',
+			'markerlist_columns' => array('Id' => 'id', 'Time' => 'time', 'Title' => 'title', 'Published' => 'isPublished'),
+			'markerlist_parent_param_name' => 'id',
+			'markeraccept_route' => 'zfcadmin/event/markers/accept',
+			'markeraccept_param_name' => 'markerId',
+			'markerdecline_route' => 'zfcadmin/event/markers/decline',
+			'markerdecline_param_name' => 'markerId'
+		);
 		parent::__construct($params);
 	}
 	
@@ -18,6 +28,120 @@ class EventController extends ListedItemController
 		}
 		return $events;
 	}
+	
+	public function markersAction(){
+		$em = $this->getEntityManager();
+		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['markerlist_parent_param_name']);
+		
+		$event = $em->getRepository("\\FSMPIVideo\\Entity\\Event")->find($id);
+		if(!$event)
+			return $this->_redirectToList();
+		
+		$markers = $event->getMarkers();
+		$markers = $markers->toArray();
+		
+		$params = array(
+			'title' => $this->params['markerlist_title'],
+			'list_route' => $this->params['markerlist_route'],
+			'columns' => $this->params['markerlist_columns'],
+			'rows' => $markers,
+			'page_length' => $this->params['page_length'],
+			'parent_list_route' => $this->params['list_route'],
+			'parent_param_name' => $this->params['markerlist_parent_param_name'],
+			'parent_id' => $event->getId(),
+			'parent_alias' => $event->getAlias(),
+			'row_buttons' => array(
+				array(
+					'title' => 'Accept',
+					'route' => $this->params['markeraccept_route'],
+					'param_name' => $this->params['markeraccept_param_name']
+				),
+				array(
+					'title' => 'Decline',
+					'route' => $this->params['markerdecline_route'],
+					'param_name' => $this->params['markerdecline_param_name'],
+				)
+			)
+		);
+		return $this->_showList($params);
+	}
+	
+	public function acceptMarkerAction(){
+		return $this->_acceptMarker(array(
+			'markerlist_parent_param_name' => $this->params['markerlist_parent_param_name'],
+			'markeraccept_param_name' => $this->params['markeraccept_param_name'],
+		));
+	}
+	
+	protected function _acceptMarker($params){
+		$em = $this->getEntityManager();
+		
+		$id = $this->getEvent()->getRouteMatch()->getParam($params['markerlist_parent_param_name']);
+		$event = $em->getRepository("\\FSMPIVideo\\Entity\\Event")->find($id);
+		if(!$event)
+			return $event->_redirectToList();
+	
+        $markerId = $this->getEvent()->getRouteMatch()->getParam($params['markeraccept_param_name']);
+		
+		if(!$markerId)
+			return $this->_redirectToMarkerlist($event);
+		
+		$marker = $em->getRepository("\\FSMPIVideo\\Entity\\EventMarker")->find((int)$markerId);
+		if(!$marker)
+			return $this->_redirectToMarkerlist($event);
+		
+		$marker->setIsPublished(true);
+		
+		if($this->zfcUserAuthentication()->hasIdentity()){
+			$identity = $this->zfcUserAuthentication()->getIdentity();
+			$marker->setPublishedBy($identity);
+		}
+		$em->flush();
+		
+		$this->flashMessenger()->addSuccessMessage('The marker was accepted correctly');
+		return $this->_redirectToMarkerlist($event);
+	}
+	
+	public function declineMarkerAction(){
+		return $this->_declineMarker(array(
+			'markerlist_parent_param_name' => $this->params['markerlist_parent_param_name'],
+			'markerdecline_param_name' => $this->params['markerdecline_param_name'],
+		));
+	}
+	
+	protected function _declineMarker($params){
+		$em = $this->getEntityManager();
+
+		$id = $this->getEvent()->getRouteMatch()->getParam($params['markerlist_parent_param_name']);
+		$event = $em->getRepository("\\FSMPIVideo\\Entity\\Event")->find($id);
+		if(!$event)
+			return $this->_redirectToList();
+
+        $markerId = $this->getEvent()->getRouteMatch()->getParam($params['markerdecline_param_name']);
+
+		if(!$markerId)
+			return $this->_redirectToMarkerlist($event);
+
+		$marker = $em->getRepository("\\FSMPIVideo\\Entity\\EventMarker")->find((int)$markerId);
+		if(!$marker)
+			return $this->_redirectToMarkerlist($event);
+
+		$marker->setIsPublished(false);
+
+		if($this->zfcUserAuthentication()->hasIdentity()){
+			$identity = $this->zfcUserAuthentication()->getIdentity();
+			$marker->setPublishedBy($identity);
+		}
+		$em->flush();
+
+		$this->flashMessenger()->addSuccessMessage('The marker was declined correctly');
+		return $this->_redirectToMarkerlist($event);
+	}
+	
+	protected function _redirectToMarkerlist($item){
+        return $this->redirect()->toRoute($this->params['markerlist_route'], array($this->params['markerlist_parent_param_name'] => $item->getId(), 'alias' => $item->getAlias()));
+	}
+	
 	
 	protected function _preCreate($item){
 		if(!$this->zfcUserAuthentication()->hasIdentity()){
