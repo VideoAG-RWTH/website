@@ -115,6 +115,7 @@ abstract class ListController extends AbstractActionController
 	}
 	
 	public function listAction(){
+		if(!$this->_authenticate()) return;
 		$em = $this->getEntityManager();
 		$items = $this->getAll();
 		
@@ -147,6 +148,7 @@ abstract class ListController extends AbstractActionController
 	}
 	
 	public function createAction(){
+		if(!$this->_authenticate()) return;
 		$em = $this->getEntityManager();
 		$form = $this->getForm();
         $request = $this->getRequest();
@@ -172,6 +174,10 @@ abstract class ListController extends AbstractActionController
 		return;
 	}
 	
+	protected function _postCreate($item){
+		return;
+	}
+	
 	protected function _createItem($item, $form){
 		$em = $this->getEntityManager();
         $request = $this->getRequest();
@@ -179,8 +185,10 @@ abstract class ListController extends AbstractActionController
         $form->bind($item);
         $form->setData($request->getPost());
         if ($form->isValid()) {
+			$this->_preCreate($item);
 			$em->persist($item);
 			$em->flush();
+			$this->_postCreate($item);
 			return true;
         }
 		return false;
@@ -192,8 +200,8 @@ abstract class ListController extends AbstractActionController
 		return $view;
 	}
 	
-    public function editAction()
-    {
+    public function editAction(){
+		if(!$this->_authenticate()) return;
 		$em = $this->getEntityManager();
         $id = $this->getEvent()->getRouteMatch()->getParam($this->params['edit_param_name']);
         $item = $this->getItem($id);
@@ -220,6 +228,10 @@ abstract class ListController extends AbstractActionController
 	protected function _preUpdate($item){
 		return;
 	}
+
+	protected function _postUpdate($item){
+		return;
+	}
 	
 	protected function _editItem($item, $form){
 		$em = $this->getEntityManager();
@@ -232,7 +244,9 @@ abstract class ListController extends AbstractActionController
 			$form->setData($request->getPost());
 			if ($form->isValid()) {
 				$form->bindValues();
+				$this->_preUpdate($item);
 				$em->flush();
+				$this->_postUpdate($item);
 				
 				return true;
 			}
@@ -247,6 +261,7 @@ abstract class ListController extends AbstractActionController
 	}
 
     public function deleteAction(){
+		if(!$this->_authenticate()) return;
         $id = $this->getEvent()->getRouteMatch()->getParam($this->params['delete_param_name']);
 		
 		if(!$id)
@@ -270,5 +285,12 @@ abstract class ListController extends AbstractActionController
 		return false;
 	}
 	
-	
+	protected function _authenticate(){
+		if(!$this->zfcUserAuthentication()->hasIdentity()){
+			$redirect = $this->getRequest()->getRequestUri();
+            $this->redirect()->toUrl($this->url()->fromRoute('zfcuser/login').'?redirect='. rawurlencode($redirect) );
+			return false;
+		}
+		return true;
+	}
 }

@@ -1,2 +1,28 @@
 body {
 }
+
+.table>tbody>tr>td.eventvideo-table-container{
+	padding-left: 4%;
+	padding-right: 0;
+}
+
+.eventvideo-table-container>table{
+	margin: 0;
+}
+
+.eventvideo-table-container>table>tbody>tr>td.cell-id{
+	width: 8%;
+}
+
+.eventvideo-table-container>table>tbody>tr>td.cell-ctrls{
+	width: 30%;
+}
+
+.eventvideo-table-container>table>tbody>tr>td,
+.eventvideo-table-container>table>tfoot>tr>td{
+	border-top: none;
+}
+
+.eventvideo-table-container>table>tfoot>tr>td{
+	padding: 0;
+}

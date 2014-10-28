@@ -51,6 +51,11 @@ class Event extends ListedItem
 	 * @ORM\OneToMany(targetEntity="EventMarker", mappedBy="event")
 	 */
 	protected $markers;
+ 	
+	/**
+	 * @ORM\OneToMany(targetEntity="Video", mappedBy="event")
+	 */
+	protected $videos;
 	
 	/**
      * @ORM\OneToMany(targetEntity="SeriesEventAssociation",mappedBy="event")
@@ -92,6 +97,12 @@ class Event extends ListedItem
 	 * @return array
 	 */
 	public function getMarkers(){ return $this->markers; }
+	
+	/**
+	 * Getter for Videos
+	 * @return array
+	 */
+	public function getVideos(){ return $this->videos; }
 	
 	/** 
 	 * Setter for Date

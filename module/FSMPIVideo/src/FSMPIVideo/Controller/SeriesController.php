@@ -1,11 +1,16 @@
 <?php
 namespace FSMPIVideo\Controller;
 
+use Zend\View\Model\ViewModel;
+
 use FSMPIVideo\Entity\Event;
 use FSMPIVideo\Entity\SeriesEventAssociation;
+use FSMPIVideo\JsonRPC\jsonRPCClient;
 
 class SeriesController extends ListedItemController
 {
+	const scriptURL = "unix://\x00sortierdaemon.uds";
+	
 	public function __construct(){
 		$params = array(
 			'list_columns' => array('Id' => 'id', 'Title' => 'title', 'Course' => 'course', 'Super Admin' => 'superAdmin'),
@@ -41,13 +46,17 @@ class SeriesController extends ListedItemController
 			'eventmarkeraccept_route' => 'zfcadmin/series/events/markers/accept',
 			'eventmarkeraccept_param_name' => 'markerId',
 			'eventmarkerdecline_route' => 'zfcadmin/series/events/markers/decline',
-			'eventmarkerdecline_param_name' => 'markerId'
-			
+			'eventmarkerdecline_param_name' => 'markerId',
+			// Event Videos
+			'eventvideo_parent_param_name' => 'eventId',
+			'eventvideounassign_route' => 'zfcadmin/series/events/videos/unassign',
+			'eventvideounassign_param_name' => 'videoId',
 		);
 		parent::__construct($params);
 	}
 	
 	public function eventsAction(){
+		if(!$this->_authenticate()) return;
 		$em = $this->getEntityManager();
 		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['sublist_parent_param_name']);
 		
@@ -99,9 +108,22 @@ class SeriesController extends ListedItemController
 					'route' => $this->params['eventmarkerlist_route'],
 					'param_name' => $this->params['eventmarkerlist_parent_param_name'],
 				)
+			),
+			'video_buttons' => array(
+				array(
+					'title' => 'Unassign',
+					'route' => $this->params['eventvideounassign_route'],
+					'param_name' => $this->params['eventvideounassign_param_name'],
+				)
 			)
 		);
-		return $this->_showList($params);
+		
+		$page = $this->getEvent()->getRouteMatch()->getParam('p');
+		$params['page'] = $page;
+		
+		$view = new ViewModel($params);
+		return $view;
+		//return $this->_showList($params);
 	}
 	
 	public function createEventAction(){
@@ -156,6 +178,8 @@ class SeriesController extends ListedItemController
 	}
 		
     public function editEventAction(){
+		if(!$this->_authenticate()) return;
+		$identity = $this->zfcUserAuthentication()->getIdentity();
 		$em = $this->getEntityManager();
 		
 		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['sublist_parent_param_name']);
@@ -169,7 +193,14 @@ class SeriesController extends ListedItemController
         $form = $this->getForm('Event');
 
 		if($this->_editItem($item, $form)){
-            $this->flashMessenger()->addSuccessMessage('The Event was edited');
+			$script = new jsonRPCClient(self::scriptURL);
+			
+			try{
+				$script->eventHasBeenEdited($identity->getId(), $item->getId());
+	            $this->flashMessenger()->addSuccessMessage('The Event was edited');
+			} catch (Exception $e){
+		        $this->flashMessenger()->addErrorMessage('The Event was edited, but script could not be notified');
+			}
             return $this->_redirectToSublist($series);
 		}
 
@@ -195,6 +226,8 @@ class SeriesController extends ListedItemController
 	}
 	
     public function deleteEventAction(){
+		if(!$this->_authenticate()) return;
+		$identity = $this->zfcUserAuthentication()->getIdentity();
 		$em = $this->getEntityManager();
 		
 		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['sublist_parent_param_name']);
@@ -210,9 +243,16 @@ class SeriesController extends ListedItemController
 		$item = $em->getRepository("\\FSMPIVideo\\Entity\\Event")->find((int)$eventId);
 		
 		if($this->_delteItem($item)){
-			$em->remove($item);
-			$em->flush();
-	        $this->flashMessenger()->addSuccessMessage('The Event was deleted');
+			$script = new jsonRPCClient(self::scriptURL);
+			
+			try{
+				$script->deleteEvent($identity->getId(), $item->getId());
+				$em->remove($item);
+				$em->flush();
+		        $this->flashMessenger()->addSuccessMessage('The Event was deleted');
+			} catch (Exception $e){
+		        $this->flashMessenger()->addErrorMessage('The Event could not be deleted');
+			}
 		}
         return $this->redirect()->toRoute($this->params['sublist_route'], array($this->params['sublist_parent_param_name'] => $series->getId()));
     }
@@ -386,6 +426,7 @@ class SeriesController extends ListedItemController
 				)
 			)
 		);
+		
 		return $this->_showList($params);
 	}
 	
@@ -478,5 +519,76 @@ class SeriesController extends ListedItemController
 			'eventAlias' => $item->getAlias(),
 		));
 	}
+	
+	protected function _jsonTestConnection(){
+		$script = new jsonRPCClient(self::scriptURL);
+		return $script->add(5,6) == 11;
+	}
+	
+	public function assignEventVideo(){
+		if(!$this->_authenticate()) return;
+		$identity = $this->zfcUserAuthentication()->getIdentity();
+		$script = new jsonRPCClient(self::scriptURL);
+
+		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['sublist_parent_param_name']);
+		$series = $em->getRepository("\\FSMPIVideo\\Entity\\Series")->find($id);
+		if(!$series)
+			return $this->_redirectToList();
 		
+		
+		$eventId = $this->getEvent()->getRouteMatch()->getParam($this->params['eventvideo_parent_param_name']);
+		$event = $em->getRepository("\\FSMPIVideo\\Entity\\Event")->find($eventId);
+		if(!$event)
+            return $this->_redirectToSublist($series);
+		
+		if($request->isPost()){
+			$data = $request->getPost();
+			$filenames = $data['videos'];
+			$success = true;
+			foreach($filenames as $videoFilename){
+				try{
+					$success = $success && $script->assignVideoToEvent((int)$identity->getId(), $event->getId(), $videoFilename);
+				} catch (Exception $e){
+					$success = false;
+				}
+			}
+			if($success)
+				$this->flashMessenger()->addSuccessMessage('All videos assigned');
+			else
+				$this->flashMessenger()->addErrorMessage('Not all videos could be assigned');
+            return $this->_redirectToSublist($series);
+		}
+		
+		// TODO assign videos view
+	}
+	
+	public function unassignEventVideo(){
+		if(!$this->_authenticate()) return;
+		$identity = $this->zfcUserAuthentication()->getIdentity();
+		$script = new jsonRPCClient(self::scriptURL);
+
+		$id = $this->getEvent()->getRouteMatch()->getParam($this->params['sublist_parent_param_name']);
+		$series = $em->getRepository("\\FSMPIVideo\\Entity\\Series")->find($id);
+		if(!$series)
+			return $this->_redirectToList();
+		
+		$eventId = $this->getEvent()->getRouteMatch()->getParam($this->params['eventvideo_parent_param_name']);
+		$event = $em->getRepository("\\FSMPIVideo\\Entity\\Event")->find($eventId);
+		if(!$event)
+            return $this->_redirectToSublist($series);
+
+		$videoId = $this->getEvent()->getRouteMatch()->getParam($this->params['eventvideounassign_param_name']);
+		$video = $em->getRepository("\\FSMPIVideo\\Entity\\Video")->find($videoId);
+		if(!$video)
+            return $this->_redirectToSublist($series);
+		
+		try{
+			$res = $script->unassignVideoFromEvent($identity->getId(), $video->getId());
+			$this->flashMessenger()->addSuccessMessage('Video successfully unassigned');
+		} catch (Exception $e){
+			$this->flashMessenger()->addErrorMessage('Video could not be unassigned');
+		}
+        return $this->_redirectToSublist($series);
+	}
+	
 }

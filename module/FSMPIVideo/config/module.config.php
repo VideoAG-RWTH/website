@@ -311,6 +311,49 @@ return array(
 										),
 								    ),
 								),
+								'videos' => array(
+									'type' => 'Segment',
+									'options' => array(
+								        'route' => '/:eventId[-:eventAlias]/videos',
+								        'defaults' => array(
+								            'controller' => 'series',
+								            'action'     => 'index',
+											'eventAlias'      => ''
+								        ),
+										'constraints' => array(
+											'eventId'     => '[0-9]+',
+											'eventAlias'  => '[a-zA-Z0-9_-]*',
+										),
+									),
+									'child_routes' => array(
+										'assign' => array(
+											'type' => 'Segment',
+											'options' => array(
+												'route' => '/:videoId/assign',
+												'defaults' => array(
+													'controller' => 'series',
+													'action'     => 'assignEventVideo',
+												),
+												'constraints' => array(
+													'videoId'         => '[0-9]+',
+												),
+											),
+										),
+										'unassign' => array(
+											'type' => 'Segment',
+											'options' => array(
+												'route' => '/:videoId/unassign',
+												'defaults' => array(
+													'controller' => 'series',
+													'action'     => 'unassignEventVideo',
+												),
+												'constraints' => array(
+													'videoId'         => '[0-9]+',
+												),
+											),
+										),
+								    ),
+								),
 								'list' => array(
 									'type' => 'Segment',
 									'options' => array(
@@ -422,6 +465,49 @@ return array(
 										),
 										'constraints' => array(
 											'markerId'         => '[0-9]+',
+										),
+									),
+								),
+						    ),
+						),
+						'videos' => array(
+							'type' => 'Segment',
+							'options' => array(
+						        'route' => '/:id[-:alias]/videos',
+						        'defaults' => array(
+						            'controller' => 'event',
+						            'action'     => 'index',
+									'alias'      => ''
+						        ),
+								'constraints' => array(
+									'id'     => '[0-9]+',
+									'alias'  => '[a-zA-Z0-9_-]*',
+								),
+							),
+							'child_routes' => array(
+								'assign' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/:videoId/assign',
+										'defaults' => array(
+											'controller' => 'event',
+											'action'     => 'assignVideo',
+										),
+										'constraints' => array(
+											'videoId'         => '[0-9]+',
+										),
+									),
+								),
+								'unassign' => array(
+									'type' => 'Segment',
+									'options' => array(
+										'route' => '/:videoId/unassign',
+										'defaults' => array(
+											'controller' => 'event',
+											'action'     => 'unassignVideo',
+										),
+										'constraints' => array(
+											'videoId'         => '[0-9]+',
 										),
 									),
 								),
