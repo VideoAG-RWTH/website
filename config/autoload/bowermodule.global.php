@@ -30,7 +30,10 @@ return array(
 				'modules' => array(
 					'html5shiv',
 					'respond',
-				)
+				),
+				'attributes' =>  array(
+					'conditional' => 'lt IE 9',
+				),
 			)
 		)
     ),

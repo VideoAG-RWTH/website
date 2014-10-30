@@ -21,8 +21,9 @@
 		
 		<!-- Scripts -->
 		<?php $this->bower('main', \BowerModule\View\Helper\Bower::CONTAINER_HEAD); ?>
-
-		<?php echo $this->headScript()->prependFile($this->basePath() . '/js/ieLT9.min.js', 'text/javascript', array('conditional' => 'lt IE 9',)); ?>
+		<?php $this->bower('ieLT9', \BowerModule\View\Helper\Bower::CONTAINER_HEAD); ?>
+		
+		<?php echo $this->headScript() ?>
 		<script type="text/javascript">
 			$(function(){
 				$('select').selecter();
