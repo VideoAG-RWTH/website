@@ -18,11 +18,11 @@ class User extends ZfcUserEntity implements JsonSerializable
 	const ROLE_MODERATOR = 20;
 	const ROLE_REPORTER = 30;
 	
-	public static function getRoles(){
-		return self::$roles;
+	public static function getAllowedRoles(){
+		return self::$allowedRoles;
 	}
 	
-	protected static $roles = array(
+	protected static $allowedRoles = array(
 		self::ROLE_ADMIN => 'Admin', 
 		self::ROLE_MODERATOR => 'Moderator', 
 		self::ROLE_REPORTER => 'Reporter'
@@ -47,7 +47,29 @@ class User extends ZfcUserEntity implements JsonSerializable
 	 * @ORM\Column(type="string")
 	 */
 	public $codedDirectory;
+
+    /**
+     * @var int
+     */
+    protected $state;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\ManyToMany(targetEntity="FSMPIVideo\Entity\Role")
+     * @ORM\JoinTable(name="user_role_linker",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     * )
+     */
+    protected $roles;
 	
+    /**
+     * Initialies the roles variable.
+     */
+    public function __construct()
+    {
+        $this->roles = new ArrayCollection();
+    }
 
     /**
      * Get role.
@@ -62,8 +84,8 @@ class User extends ZfcUserEntity implements JsonSerializable
      * @return string
      */
 	public function getRoleName(){ 
-		if(array_key_exists($this->role, self::$roles)) 
-			return self::$roles[$this->role]; 
+		if(array_key_exists($this->role, self::$allowedRoles)) 
+			return self::$allowedRoles[$this->role]; 
 		return "";
 	}
 
@@ -120,6 +142,51 @@ class User extends ZfcUserEntity implements JsonSerializable
      */
 	public function setCodedDirectory($codedDirectory){ $this->codedDirectory = $codedDirectory; return $this; }
 
+    /**
+     * Get state.
+     *
+     * @return int
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set state.
+     *
+     * @param int $state
+     *
+     * @return void
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+
+    /**
+     * Get role.
+     *
+     * @return array
+     */
+    public function getRoles()
+    {
+        return $this->roles->getValues();
+    }
+
+    /**
+     * Add a role to the user.
+     *
+     * @param Role $role
+     *
+     * @return void
+     */
+    public function addRole($role)
+    {
+        $this->roles[] = $role;
+    }
+	
+	
 	public function getArrayCopy(){
 		return $this->jsonSerialize();
 	}
